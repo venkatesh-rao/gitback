@@ -1,5 +1,5 @@
 import { ContextWithDBModel } from "../../types";
-import { get } from "../../utils/http-request";
+import { request } from "@octokit/request";
 
 export async function getLoggedInUser(context: ContextWithDBModel) {
   const user = await context.db.User.findById(context.req.userId);
@@ -16,14 +16,24 @@ export async function getLoggedInUser(context: ContextWithDBModel) {
 }
 
 export async function getLoggedInUserFromGithub(githubUserAccessToken: string) {
-  const user = await get("/user", githubUserAccessToken);
+  const userResponse = await request("GET /user", {
+    headers: {
+      authorization: `token ${githubUserAccessToken}`,
+    },
+  });
+
+  const { data: user } = userResponse;
+
+  if (!user) {
+    return null;
+  }
 
   const {
     login: username,
     avatar_url: avatarUrl,
     name,
     email: publicEmail,
-  } = user!;
+  } = user;
 
   return {
     username,

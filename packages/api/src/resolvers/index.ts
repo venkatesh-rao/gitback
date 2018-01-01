@@ -34,24 +34,16 @@ const Query: QueryResolvers = {
   },
 
   repositories: async (_parent, _args, context: ContextWithDBModel) => {
-    if (!context.req.installationId) {
+    if (!context.req.userId) {
       throw new Error("Unauthorized app request");
     }
 
-    const githubAppAccessToken = await app.getInstallationAccessToken({
-      installationId: context.req.installationId,
-    });
-
-    return getAppRepositories(githubAppAccessToken);
+    return getAppRepositories(context);
   },
 
   products: async (_parent, _args, context: ContextWithDBModel) => {
     if (!context.req.userId) {
       throw new Error("Unauthorized user");
-    }
-
-    if (!context.req.installationId) {
-      return [];
     }
 
     return getAllProductsByApp(context);
@@ -97,43 +89,39 @@ const Mutation: MutationResolvers = {
 
     const githubUserAccessToken = await authenticate(code, "user");
 
-    const loggedInUser = await getLoggedInUserFromGithub(githubUserAccessToken);
+    const githubUser = await getLoggedInUserFromGithub(githubUserAccessToken);
+
+    if (!githubUser) {
+      throw new Error("Github user not found");
+    }
+
+    const { name, username, avatarUrl, publicEmail } = githubUser;
 
     const query = {
-      name: loggedInUser.name,
-      username: loggedInUser.username,
-      avatarUrl: loggedInUser.avatarUrl,
-      publicEmail: loggedInUser.publicEmail,
+      name,
+      username,
+      avatarUrl,
+      publicEmail,
       // userType is 0 for normal user
       userType: 0,
     };
 
     // Find the document
     let user = await context.db.User.findOne({
-      username: loggedInUser.username,
+      username,
     });
 
     if (!user) {
       user = await new context.db.User(query).save();
     }
 
-    const { _id: userId, username, installationId } = user;
+    const { _id: userId } = user;
 
     // create tokens to set in cokkies
     const token = createToken({
       userId,
       username,
-      installationId,
       githubUserAccessToken,
-    });
-
-    /* Store the tokens in cookies  */
-    let cookieAttributes = {};
-
-    context.res.cookie("gitback-at", token, {
-      ...cookieAttributes,
-      // expires in 40 days
-      maxAge: 3456000000,
     });
 
     return token;
@@ -145,40 +133,26 @@ const Mutation: MutationResolvers = {
   ) => {
     const { installationId } = args;
 
-    const loggedInUser = context.req;
+    const { userId } = context.req;
 
-    if (!loggedInUser.userId || !loggedInUser.username) {
+    if (!userId) {
       throw new Error("Unauthorized user request");
     }
 
     const query = {
-      _id: loggedInUser.userId,
-      username: loggedInUser.username,
+      _id: userId,
     };
 
     const update = { installationId, userType: 1 };
 
     // Find the document
-    await context.db.User.findOneAndUpdate(query, update);
+    const updatedUser = await context.db.User.findOneAndUpdate(query, update);
 
-    // create tokens to set in cokkies
-    const token = createToken({
-      userId: loggedInUser.userId,
-      username: loggedInUser.username,
-      githubUserAccessToken: loggedInUser.githubUserAccessToken,
-      installationId,
-    });
+    if (!updatedUser) {
+      return false;
+    }
 
-    /* Store the tokens in cookies  */
-    let cookieAttributes = {};
-
-    context.res.cookie("gitback-at", token, {
-      ...cookieAttributes,
-      // expires in 40 days
-      maxAge: 3456000000,
-    });
-
-    return token;
+    return true;
   },
   logout: (_parent, _args, context: ContextWithDBModel) => {
     context.res.clearCookie("gitback-at");
@@ -190,7 +164,7 @@ const Mutation: MutationResolvers = {
     args: MutationCreateProductArgs,
     context: ContextWithDBModel
   ) => {
-    if (!context.req.userId || !context.req.installationId) {
+    if (!context.req.userId) {
       throw new Error("Unauthorized request");
     }
 

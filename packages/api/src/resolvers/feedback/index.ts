@@ -6,7 +6,6 @@ import {
 } from "../../generated/graphql";
 import { ContextWithDBModel } from "../../types";
 import { app } from "../../utils/github";
-import { createIssue } from "../../utils/http-request";
 
 export async function addNewFeedback(
   args: MutationCreateFeedbackArgs,
@@ -39,13 +38,18 @@ export async function addNewFeedback(
 
   const [repoOwner, repoName] = repositoryName.split("/");
 
-  const issue = await createIssue(accessToken, {
+  const issueResponse = await request("POST /repos/:owner/:repo/issues", {
     title,
     body: description || "",
     repo: repoName,
     owner: repoOwner,
     labels: ["public"],
+    headers: {
+      authorization: `token ${accessToken}`,
+    },
   });
+
+  const { data: issue } = issueResponse;
 
   await new context.db.Feedback({
     product: productId,
