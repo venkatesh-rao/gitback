@@ -27,8 +27,14 @@ export async function createNewProduct(
 
   const { _id: id, name, url, repositoryName, owner, developers } = product;
 
+  const { installationId } = owner;
+
+  if (!installationId) {
+    throw new Error("Unauthorized request");
+  }
+
   const appInstallationAccessToken = await app.getInstallationAccessToken({
-    installationId: owner.installationId,
+    installationId,
   });
 
   const [repoOwner, repoName] = repository.split("/");

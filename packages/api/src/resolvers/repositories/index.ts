@@ -1,5 +1,6 @@
 import { Repository } from "../../generated/graphql";
-import { GithubRepository } from "../../types";
+import { GithubRepository, ContextWithDBModel } from "../../types";
+import { app } from "../../utils/github";
 
 const { request } = require("@octokit/request");
 
@@ -16,8 +17,22 @@ async function listRepositories(appInstallationAccessToken: string) {
 }
 
 export async function getAppRepositories(
-  appInstallationAccessToken: string
+  context: ContextWithDBModel
 ): Promise<Repository[]> {
+  const user = await context.db.User.findById(context.req.userId);
+
+  if (!user) {
+    throw new Error("no user found");
+  }
+
+  if (!user.installationId) {
+    throw new Error("Unauthorized request");
+  }
+
+  const appInstallationAccessToken = await app.getInstallationAccessToken({
+    installationId: user.installationId,
+  });
+
   const repos = await listRepositories(appInstallationAccessToken);
 
   return repos.map((repo: GithubRepository) => {

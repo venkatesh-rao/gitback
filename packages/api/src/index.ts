@@ -10,7 +10,7 @@ import * as db from "./database/model";
 import resolvers from "./resolvers";
 import typeDefs from "./typedefs";
 import { ContextWithDBModel } from "./types";
-import { authMiddleware } from "./utils/authMiddleware";
+import { authMiddleware } from "./utils/auth-middleware";
 
 const app = express();
 

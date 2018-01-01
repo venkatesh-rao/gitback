@@ -7,7 +7,6 @@ import { IUserModel } from "./database/model/UserModel";
 export interface AccessToken {
   userId: string;
   username: string;
-  installationId?: number;
   githubUserAccessToken?: string;
 }
 
@@ -21,7 +20,6 @@ interface DB {
 interface RequestWithCookies extends Request {
   userId: string;
   username: string;
-  installationId?: number;
   githubUserAccessToken?: string;
 }
 

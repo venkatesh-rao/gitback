@@ -113,7 +113,7 @@ export type QueryCommentsArgs = {
 export type Mutation = {
    __typename?: 'Mutation';
   githubUserAuthenticate: Scalars['String'];
-  githubAppAuthenticate: Scalars['String'];
+  githubAppAuthenticate: Scalars['Boolean'];
   logout: Scalars['Boolean'];
   createProduct: Product;
   createFeedback: Feedback;
@@ -328,7 +328,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   githubUserAuthenticate?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationGithubUserAuthenticateArgs, 'code'>>,
-  githubAppAuthenticate?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationGithubAppAuthenticateArgs, 'installationId'>>,
+  githubAppAuthenticate?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationGithubAppAuthenticateArgs, 'installationId'>>,
   logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
   createProduct?: Resolver<ResolversTypes['Product'], ParentType, ContextType, RequireFields<MutationCreateProductArgs, 'productName' | 'productUrl' | 'repositoryName'>>,
   createFeedback?: Resolver<ResolversTypes['Feedback'], ParentType, ContextType, RequireFields<MutationCreateFeedbackArgs, 'productId' | 'feedback'>>,

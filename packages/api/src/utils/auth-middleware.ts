@@ -13,6 +13,7 @@ export async function authMiddleware(
   if (!Authorization) {
     return next();
   }
+
   // parse the access token
   try {
     const data: AccessToken = verify(
@@ -20,14 +21,14 @@ export async function authMiddleware(
       process.env.ACCESS_TOKEN_SECRET || ""
     ) as AccessToken;
 
-    if (!data || (!data.githubUserAccessToken && !data.installationId)) {
+    if (!data || !data.githubUserAccessToken) {
       throw new Error("Unauthorized user!");
     }
 
-    (req as any).githubUserAccessToken = data.githubUserAccessToken;
-    (req as any).userId = data.userId;
-    (req as any).username = data.username;
-    (req as any).installationId = data.installationId;
+    req = {
+      ...req,
+      ...data,
+    } as any;
   } catch (err) {
     return next();
   }

@@ -86,7 +86,7 @@ const typeDefs: DocumentNode = gql`
   # clients can execute, along with the return type for each.
   type Mutation {
     githubUserAuthenticate(code: String!): String!
-    githubAppAuthenticate(installationId: Float!): String!
+    githubAppAuthenticate(installationId: Float!): Boolean!
     logout: Boolean!
 
     createProduct(
