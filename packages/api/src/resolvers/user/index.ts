@@ -4,7 +4,11 @@ import { request } from "@octokit/request";
 export async function getLoggedInUser(context: ContextWithDBModel) {
   const user = await context.db.User.findById(context.req.userId);
 
-  const { username, avatarUrl, name, publicEmail, installationId } = user!;
+  if (!user) {
+    return null;
+  }
+
+  const { username, avatarUrl, name, publicEmail, installationId } = user;
 
   return {
     username,

@@ -75,7 +75,7 @@ export type FeedbackInput = {
 
 export type Query = {
    __typename?: 'Query';
-  me: User;
+  me?: Maybe<User>;
   repositories: Array<Repository>;
   products?: Maybe<Array<Product>>;
   product: Product;
@@ -317,7 +317,7 @@ export type GihubUserResolvers<ContextType = any, ParentType extends ResolversPa
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  me?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
+  me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>,
   repositories?: Resolver<Array<ResolversTypes['Repository']>, ParentType, ContextType>,
   products?: Resolver<Maybe<Array<ResolversTypes['Product']>>, ParentType, ContextType>,
   product?: Resolver<ResolversTypes['Product'], ParentType, ContextType, RequireFields<QueryProductArgs, 'productUrl'>>,

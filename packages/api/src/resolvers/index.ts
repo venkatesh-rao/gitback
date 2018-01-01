@@ -26,8 +26,9 @@ import { getComments } from "./comments";
 
 const Query: QueryResolvers = {
   me: (_parent, _args, context: ContextWithDBModel) => {
+    // if no user logged-in fail silently
     if (!context.req.githubUserAccessToken || !context.req.userId) {
-      throw new Error("Unauthorized user request");
+      return null;
     }
 
     return getLoggedInUser(context);
