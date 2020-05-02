@@ -1,0 +1,36 @@
+{
+  "name": "@gitback/api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.ts",
+  "scripts": {
+    "start:dev": "nodemon",
+    "start": "npm run build && node build/index.js",
+    "build": "rimraf ./build && tsc",
+    "generate-gql-types": "graphql-codegen --config codegen.yml"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@graphql-codegen/cli": "1.13.4",
+    "@graphql-codegen/typescript": "1.13.4",
+    "@graphql-codegen/typescript-resolvers": "1.13.4",
+    "@types/graphql": "^14.5.0",
+    "@types/node": "^13.13.4",
+    "@types/passport-github2": "^1.2.4",
+    "nodemon": "^2.0.3",
+    "rimraf": "^3.0.2",
+    "ts-node": "^8.9.1",
+    "typescript": "^3.8.3",
+    "@graphql-codegen/introspection": "1.13.4"
+  },
+  "dependencies": {
+    "apollo-server": "^2.12.0",
+    "axios": "^0.19.2",
+    "dotenv": "^8.2.0",
+    "graphql": "^15.0.0",
+    "passport": "^0.4.1",
+    "passport-github2": "^0.1.12"
+  }
+}
