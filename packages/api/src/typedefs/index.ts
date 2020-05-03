@@ -1,4 +1,4 @@
-import { gql } from "apollo-server";
+import { gql } from "apollo-server-express";
 import { DocumentNode } from "graphql";
 
 // A schema is a collection of type definitions (hence "typeDefs")
@@ -11,11 +11,6 @@ const typeDefs: DocumentNode = gql`
     name: String!
   }
 
-  type AuthPayload {
-    accessToken: String!
-    refreshToken: String
-  }
-
   # The "Query" type is special: it lists all of the available queries that
   # clients can execute, along with the return type for each.
   type Query {
@@ -25,7 +20,7 @@ const typeDefs: DocumentNode = gql`
   # The "Mutation" type is special: it lists all of the available mutations that
   # clients can execute, along with the return type for each.
   type Mutation {
-    githubAuthenticate(code: String!): AuthPayload!
+    githubAuthenticate(code: String!): String!
   }
 `;
 

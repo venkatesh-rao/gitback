@@ -4,6 +4,7 @@ import {
   MutationResolvers,
   Resolvers,
 } from "../generated/graphql";
+import createToken from "../utils/create-token";
 
 const Query: QueryResolvers = {
   me: (_parent, _args, _context) => {
@@ -18,9 +19,19 @@ const Mutation: MutationResolvers = {
     const { code } = _args;
     const accessToken = await authenticate(code);
 
-    return {
-      accessToken,
-    };
+    // create tokens to set in cokkies
+    const token = createToken(accessToken);
+
+    /* Store the tokens in cookies  */
+    let cookieAttributes = {};
+
+    _context.res.cookie("gitback-at", token, {
+      ...cookieAttributes,
+      // expires in 40 days
+      maxAge: 3456000000,
+    });
+
+    return token;
   },
 };
 
