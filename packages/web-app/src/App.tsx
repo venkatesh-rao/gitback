@@ -1,23 +1,8 @@
 import React from "react";
-import "./App.css";
-
-const {
-  REACT_APP_GITHUB_OAUTH_CLIENT_ID,
-  REACT_APP_REDIRECT_URI,
-} = process.env;
+import Login from "./views/Login";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <a
-          href={`https://github.com/login/oauth/authorize?client_id=${REACT_APP_GITHUB_OAUTH_CLIENT_ID}&scope=user&redirect_uri=${REACT_APP_REDIRECT_URI}`}
-        >
-          Login
-        </a>
-      </header>
-    </div>
-  );
+  return <Login />;
 }
 
 export default App;
