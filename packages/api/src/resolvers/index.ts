@@ -1,19 +1,19 @@
 import { authenticate } from "../utils/github";
-import { QueryResolvers, Resolvers } from "../generated/graphql";
-
-const books = [
-  {
-    title: "Harry Potter and the Chamber of Secrets",
-    author: "J.K. Rowling",
-  },
-  {
-    title: "Jurassic Park",
-    author: "Michael Crichton",
-  },
-];
+import {
+  QueryResolvers,
+  MutationResolvers,
+  Resolvers,
+} from "../generated/graphql";
 
 const Query: QueryResolvers = {
-  books: (_parent, _args, _context) => books,
+  me: (_parent, _args, _context) => {
+    return {
+      name: "User",
+    };
+  },
+};
+
+const Mutation: MutationResolvers = {
   githubAuthenticate: async (_parent, _args, _context) => {
     const { code } = _args;
     const accessToken = await authenticate(code);
@@ -28,6 +28,7 @@ const Query: QueryResolvers = {
 // schema. This resolver retrieves books from the "books" array above.
 const resolvers: Resolvers = {
   Query,
+  Mutation,
 };
 
 export default resolvers;

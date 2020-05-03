@@ -12,10 +12,9 @@ export type Scalars = {
   Upload: any;
 };
 
-export type Book = {
-   __typename?: 'Book';
-  title?: Maybe<Scalars['String']>;
-  author?: Maybe<Scalars['String']>;
+export type User = {
+   __typename?: 'User';
+  name: Scalars['String'];
 };
 
 export type AuthPayload = {
@@ -26,12 +25,16 @@ export type AuthPayload = {
 
 export type Query = {
    __typename?: 'Query';
-  books?: Maybe<Array<Maybe<Book>>>;
+  me: User;
+};
+
+export type Mutation = {
+   __typename?: 'Mutation';
   githubAuthenticate: AuthPayload;
 };
 
 
-export type QueryGithubAuthenticateArgs = {
+export type MutationGithubAuthenticateArgs = {
   code: Scalars['String'];
 };
 
@@ -117,9 +120,10 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = ResolversObject<{
   String: ResolverTypeWrapper<Scalars['String']>,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
-  Book: ResolverTypeWrapper<Book>,
+  User: ResolverTypeWrapper<User>,
   AuthPayload: ResolverTypeWrapper<AuthPayload>,
   Query: ResolverTypeWrapper<{}>,
+  Mutation: ResolverTypeWrapper<{}>,
   CacheControlScope: CacheControlScope,
   Upload: ResolverTypeWrapper<Scalars['Upload']>,
 }>;
@@ -128,16 +132,16 @@ export type ResolversTypes = ResolversObject<{
 export type ResolversParentTypes = ResolversObject<{
   String: Scalars['String'],
   Boolean: Scalars['Boolean'],
-  Book: Book,
+  User: User,
   AuthPayload: AuthPayload,
   Query: {},
+  Mutation: {},
   CacheControlScope: CacheControlScope,
   Upload: Scalars['Upload'],
 }>;
 
-export type BookResolvers<ContextType = any, ParentType extends ResolversParentTypes['Book'] = ResolversParentTypes['Book']> = ResolversObject<{
-  title?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  author?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;
 
@@ -148,8 +152,11 @@ export type AuthPayloadResolvers<ContextType = any, ParentType extends Resolvers
 }>;
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
-  books?: Resolver<Maybe<Array<Maybe<ResolversTypes['Book']>>>, ParentType, ContextType>,
-  githubAuthenticate?: Resolver<ResolversTypes['AuthPayload'], ParentType, ContextType, RequireFields<QueryGithubAuthenticateArgs, 'code'>>,
+  me?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
+}>;
+
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  githubAuthenticate?: Resolver<ResolversTypes['AuthPayload'], ParentType, ContextType, RequireFields<MutationGithubAuthenticateArgs, 'code'>>,
 }>;
 
 export interface UploadScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Upload'], any> {
@@ -157,9 +164,10 @@ export interface UploadScalarConfig extends GraphQLScalarTypeConfig<ResolversTyp
 }
 
 export type Resolvers<ContextType = any> = ResolversObject<{
-  Book?: BookResolvers<ContextType>,
+  User?: UserResolvers<ContextType>,
   AuthPayload?: AuthPayloadResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
+  Mutation?: MutationResolvers<ContextType>,
   Upload?: GraphQLScalarType,
 }>;
 

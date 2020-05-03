@@ -7,10 +7,8 @@ import { DocumentNode } from "graphql";
 const typeDefs: DocumentNode = gql`
   # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
 
-  # This "Book" type defines the queryable fields for every book in our data source.
-  type Book {
-    title: String
-    author: String
+  type User {
+    name: String!
   }
 
   type AuthPayload {
@@ -19,10 +17,14 @@ const typeDefs: DocumentNode = gql`
   }
 
   # The "Query" type is special: it lists all of the available queries that
-  # clients can execute, along with the return type for each. In this
-  # case, the "books" query returns an array of zero or more Books (defined above).
+  # clients can execute, along with the return type for each.
   type Query {
-    books: [Book]
+    me: User!
+  }
+
+  # The "Mutation" type is special: it lists all of the available mutations that
+  # clients can execute, along with the return type for each.
+  type Mutation {
     githubAuthenticate(code: String!): AuthPayload!
   }
 `;
