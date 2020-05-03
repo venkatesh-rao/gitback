@@ -20,13 +20,16 @@
     "@types/react-dom": "^16.9.7",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-icons": "^3.10.0",
     "react-scripts": "3.4.1",
     "typescript": "^3.7.5"
   },
   "scripts": {
-    "start:dev": "react-scripts start",
+    "start:dev": "npm run watch:css && react-scripts start",
     "start": "npm run build && react-scripts start",
-    "build": "react-scripts build",
+    "build": "npm run watch:css && react-scripts build",
+    "build:css": "postcss src/assets/tailwind.css -o src/assets/main.css",
+    "watch:css": "postcss src/assets/tailwind.css -o src/assets/main.css",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -44,5 +47,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "autoprefixer": "^9.7.6",
+    "postcss-cli": "^7.1.1",
+    "tailwindcss": "^1.4.4"
   }
 }
