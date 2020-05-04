@@ -4,10 +4,36 @@ import typeDefs from "./typedefs";
 import resolvers from "./resolvers";
 import express from "express";
 import cookieParser from "cookie-parser";
+import cors, { CorsOptions } from "cors";
 import { verify } from "jsonwebtoken";
 import createToken from "./utils/create-token";
+import { AccessToken } from "./types";
 
 const app = express();
+
+// list of allowed origins
+const whitelist = [process.env.CLIENT_HOST, process.env.API_HOST];
+
+// Options for Cross-origin resource sharing(CORS)
+// Options for Cross-origin resource sharing(CORS)
+const corsOptions: CorsOptions = {
+  origin(origin, callback) {
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(null, true);
+      // callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true, // <- enable CORS response for requests with credentials (cookies, http authentication)
+};
+
+// allow requests from only specified origins
+app.use(cors(corsOptions));
 
 // cookie parser to parse cookies from the request
 app.use(cookieParser());
@@ -21,18 +47,18 @@ app.use(async (req, res, next) => {
   }
   // parse the access token
   try {
-    const githubAccessToken = verify(
+    const data: AccessToken = verify(
       accessTokenCookie,
       process.env.ACCESS_TOKEN_SECRET || ""
-    ) as string;
+    ) as AccessToken;
 
-    if (!githubAccessToken) {
+    if (!data || !data.githubAccessToken) {
       throw new Error("Unauthorized user!");
     }
 
-    (req as any).githubAccessToken = githubAccessToken;
+    (req as any).githubAccessToken = data.githubAccessToken;
 
-    const token = createToken(githubAccessToken);
+    const token = createToken(data.githubAccessToken);
 
     let cookieAttributes = {};
 
@@ -55,7 +81,7 @@ const server = new ApolloServer({
   context: ({ req, res }) => ({ req, res }),
 });
 
-server.applyMiddleware({ app, path: "/" });
+server.applyMiddleware({ app, path: "/", cors: false });
 
 // The `listen` method launches a web server.
 app.listen({ port: 4000 }, () =>
