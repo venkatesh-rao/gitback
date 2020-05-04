@@ -8,7 +8,10 @@ const typeDefs: DocumentNode = gql`
   # Comments in GraphQL strings (such as this one) start with the hash (#) symbol.
 
   type User {
-    name: String!
+    username: String!
+    avatarUrl: String!
+    name: String
+    email: String
   }
 
   # The "Query" type is special: it lists all of the available queries that

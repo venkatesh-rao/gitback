@@ -5,12 +5,30 @@ import {
   Resolvers,
 } from "../generated/graphql";
 import createToken from "../utils/create-token";
+import Axios from "axios";
 
 const Query: QueryResolvers = {
   me: (_parent, _args, _context) => {
-    return {
-      name: "User",
-    };
+    if (!_context.req.githubAccessToken) {
+      throw new Error("Unauthorized request");
+    }
+
+    console.log(_context.req.githubAccessToken);
+
+    return Axios.get("https://api.github.com/user", {
+      headers: {
+        Authorization: `token ${_context.req.githubAccessToken}`,
+      },
+    }).then((response) => {
+      const userData = response.data;
+
+      return {
+        username: userData.login,
+        avatarUrl: userData.avatar_url,
+        name: userData.name,
+        email: userData.email,
+      };
+    });
   },
 };
 
