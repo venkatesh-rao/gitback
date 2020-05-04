@@ -4,8 +4,8 @@ import querystring from "querystring";
 const {
   OAUTH_CLIENT_ID,
   OAUTH_CLIENT_SECRET,
-  OAUTH_HOST,
-  OAUTH_PATH,
+  OAUTH_HOST = "github.com",
+  OAUTH_PATH = "/login/oauth/access_token",
 } = process.env;
 
 export function authenticate(code: string): Promise<string> {
