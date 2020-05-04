@@ -3,7 +3,6 @@ import { useLocation, Redirect } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import { GITHUB_AUTHENTICATE_QUERY } from "./query";
 import { GithubAuthenticateVars, GithubAuthenticateData } from "./types";
-import Login from "../Login";
 
 // A custom hook that builds on useLocation to parse
 // the query string for you.
@@ -40,7 +39,7 @@ const Home = () => {
     }
   }, []);
 
-  if (!code || !error) {
+  if (!code || error) {
     return <Redirect to="/login" />;
   }
 
