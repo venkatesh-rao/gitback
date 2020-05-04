@@ -49,7 +49,11 @@ app.use(async (req, res, next) => {
 
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: ({ req, res }) => ({ req, res }),
+});
 
 server.applyMiddleware({ app, path: "/" });
 
