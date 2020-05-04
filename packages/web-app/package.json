@@ -30,8 +30,8 @@
     "typescript": "^3.7.5"
   },
   "scripts": {
-    "start:dev": "npm run watch:css && react-scripts start",
-    "start": "npm run build && react-scripts start",
+    "start:dev": "npm run watch:css && PORT=3001 react-scripts start",
+    "start": "npm run build && PORT=3001 react-scripts start",
     "build": "npm run watch:css && react-scripts build",
     "build:css": "postcss src/assets/tailwind.css -o src/assets/main.css",
     "watch:css": "postcss src/assets/tailwind.css -o src/assets/main.css",
