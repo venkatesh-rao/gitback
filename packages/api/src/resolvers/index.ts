@@ -13,8 +13,6 @@ const Query: QueryResolvers = {
       throw new Error("Unauthorized request");
     }
 
-    console.log(_context.req.githubAccessToken);
-
     return Axios.get("https://api.github.com/user", {
       headers: {
         Authorization: `token ${_context.req.githubAccessToken}`,
