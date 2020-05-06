@@ -23,7 +23,7 @@ const typeDefs: DocumentNode = gql`
   # The "Mutation" type is special: it lists all of the available mutations that
   # clients can execute, along with the return type for each.
   type Mutation {
-    githubAuthenticate(code: String!): String!
+    githubAuthenticate(code: String!, userType: String): String!
   }
 `;
 

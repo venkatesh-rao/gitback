@@ -33,6 +33,7 @@ export type Mutation = {
 
 export type MutationGithubAuthenticateArgs = {
   code: Scalars['String'];
+  userType?: Maybe<Scalars['String']>;
 };
 
 export enum CacheControlScope {
