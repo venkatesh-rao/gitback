@@ -1,17 +1,22 @@
 import { Document, Model, model, Schema } from "mongoose";
 
 // Schema
-const StatusSchema = new Schema({
-  label: {
-    type: String,
-    unique: true,
-    required: true,
-    lowercase: true,
+const StatusSchema = new Schema(
+  {
+    label: {
+      type: String,
+      unique: true,
+      required: true,
+      lowercase: true,
+    },
+    description: {
+      type: String,
+    },
   },
-  description: {
-    type: String,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 // DO NOT export this
 interface IStatusSchema extends Document {

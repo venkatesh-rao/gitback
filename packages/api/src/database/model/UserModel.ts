@@ -1,29 +1,34 @@
 import { Document, Model, model, Schema } from "mongoose";
 
 // Schema
-const UserSchema = new Schema({
-  name: {
-    type: String,
+const UserSchema = new Schema(
+  {
+    name: {
+      type: String,
+    },
+    username: {
+      type: String,
+      unique: true,
+      required: true,
+      lowercase: true,
+    },
+    avatarUrl: {
+      type: String,
+    },
+    publicEmail: {
+      type: String,
+    },
+    userType: {
+      type: Number,
+      enum: [0, 1],
+      default: 0,
+      required: true,
+    },
   },
-  username: {
-    type: String,
-    unique: true,
-    required: true,
-    lowercase: true,
-  },
-  avatarUrl: {
-    type: String,
-  },
-  publicEmail: {
-    type: String,
-  },
-  userType: {
-    type: Number,
-    enum: [0, 1],
-    default: 0,
-    required: true,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 enum UserType {
   User = 0,
