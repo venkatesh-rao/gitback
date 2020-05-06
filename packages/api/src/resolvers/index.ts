@@ -1,39 +1,44 @@
-import { authenticate } from "../utils/github";
 import {
-  QueryResolvers,
   MutationResolvers,
+  QueryResolvers,
   Resolvers,
 } from "../generated/graphql";
+import { ContextWithDBModel } from "../types";
 import createToken from "../utils/create-token";
-import Axios from "axios";
+import { authenticate } from "../utils/github";
+import { getLoggedInUser } from "./user";
 
 const Query: QueryResolvers = {
-  me: (_parent, _args, _context) => {
-    if (!_context.req.githubAccessToken) {
+  me: (_parent, _args, context: ContextWithDBModel) => {
+    if (!context.req.githubAccessToken) {
       throw new Error("Unauthorized request");
     }
 
-    return Axios.get("https://api.github.com/user", {
-      headers: {
-        Authorization: `token ${_context.req.githubAccessToken}`,
-      },
-    }).then((response) => {
-      const userData = response.data;
-
-      return {
-        username: userData.login,
-        avatarUrl: userData.avatar_url,
-        name: userData.name,
-        email: userData.email,
-      };
-    });
+    return getLoggedInUser(context.req.githubAccessToken);
   },
 };
 
 const Mutation: MutationResolvers = {
-  githubAuthenticate: async (_parent, _args, _context) => {
-    const { code } = _args;
+  githubAuthenticate: async (_parent, args, context: ContextWithDBModel) => {
+    const { code, userType = "User" } = args;
+
     const accessToken = await authenticate(code);
+
+    const loggedInUser = await getLoggedInUser(context.req.githubAccessToken);
+
+    const query = {
+      name: loggedInUser.name,
+      username: loggedInUser.username,
+      avatarUrl: loggedInUser.avatarUrl,
+      publicEmail: loggedInUser.email,
+      userType: userType === "User" ? 0 : 1,
+    };
+
+    const update = { expire: new Date() };
+    const options = { upsert: true, new: true, setDefaultsOnInsert: true };
+
+    // Find the document
+    await context.db.User.findOneAndUpdate(query, update, options);
 
     // create tokens to set in cokkies
     const token = createToken(accessToken);
@@ -41,7 +46,7 @@ const Mutation: MutationResolvers = {
     /* Store the tokens in cookies  */
     let cookieAttributes = {};
 
-    _context.res.cookie("gitback-at", token, {
+    context.res.cookie("gitback-at", token, {
       ...cookieAttributes,
       // expires in 40 days
       maxAge: 3456000000,
