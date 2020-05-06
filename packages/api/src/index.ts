@@ -1,18 +1,42 @@
 require("dotenv").config();
 import { ApolloServer } from "apollo-server-express";
-import typeDefs from "./typedefs";
-import resolvers from "./resolvers";
-import express from "express";
 import cookieParser from "cookie-parser";
 import cors, { CorsOptions } from "cors";
+import express from "express";
 import { verify } from "jsonwebtoken";
+import mongoose from "mongoose";
+import * as db from "./database/model";
+import resolvers from "./resolvers";
+import typeDefs from "./typedefs";
+import { AccessToken, ContextWithDBModel } from "./types";
 import createToken from "./utils/create-token";
-import { AccessToken } from "./types";
 
 const app = express();
 
+const {
+  MONGO_URL = "mongodb://localhost/gitback",
+  CLIENT_HOST,
+  API_HOST,
+} = process.env;
+
+mongoose.connect(MONGO_URL, {
+  useNewUrlParser: true,
+  useCreateIndex: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+});
+
+mongoose.connection.on(
+  "error",
+  console.error.bind(console, "MongoDB Connection Error:")
+);
+
+mongoose.connection.once("open", function () {
+  console.log("MongoDB connected!");
+});
+
 // list of allowed origins
-const whitelist = [process.env.CLIENT_HOST, process.env.API_HOST];
+const whitelist = [CLIENT_HOST, API_HOST];
 
 // Options for Cross-origin resource sharing(CORS)
 // Options for Cross-origin resource sharing(CORS)
@@ -78,7 +102,7 @@ app.use(async (req, res, next) => {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: ({ req, res }) => ({ req, res }),
+  context: ({ req, res }) => ({ req, res, db } as ContextWithDBModel),
 });
 
 server.applyMiddleware({ app, path: "/", cors: false });
