@@ -24,6 +24,9 @@ const UserSchema = new Schema(
       default: 0,
       required: true,
     },
+    installationId: {
+      type: String,
+    },
   },
   {
     timestamps: true,
@@ -41,6 +44,7 @@ interface IUserSchema extends Document {
   username: string;
   avatarUrl?: string;
   publicEmail?: string;
+  installationId?: string;
   userType: UserType;
 }
 
