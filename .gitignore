@@ -111,4 +111,7 @@ build/
 tmp/
 temp/
 
+# key files
+*.pem
+
 # End of https://www.gitignore.io/api/node

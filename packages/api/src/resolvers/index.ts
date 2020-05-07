@@ -28,7 +28,7 @@ const Mutation: MutationResolvers = {
 
     const githubUserAccessToken = await authenticate(code, "user");
 
-    const loggedInUser = await getLoggedInUser(accessToken);
+    const loggedInUser = await getLoggedInUser(githubUserAccessToken);
 
     const query = {
       name: loggedInUser.name,
