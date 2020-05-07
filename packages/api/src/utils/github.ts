@@ -1,17 +1,25 @@
 import Axios from "axios";
 import querystring from "querystring";
+const { App } = require("@octokit/app");
+const fs = require("fs");
+const path = require("path");
 
 const {
+  APP_CLIENT_ID,
+  APP_CLIENT_SECRET,
+  APP_ID,
+
   OAUTH_CLIENT_ID,
   OAUTH_CLIENT_SECRET,
+
   OAUTH_HOST = "github.com",
   OAUTH_PATH = "/login/oauth/access_token",
 } = process.env;
 
-export function authenticate(code: string): Promise<string> {
+export function authenticate(code: string, type: string): Promise<string> {
   const data = {
-    client_id: OAUTH_CLIENT_ID,
-    client_secret: OAUTH_CLIENT_SECRET,
+    client_id: type === "app" ? APP_CLIENT_ID : OAUTH_CLIENT_ID,
+    client_secret: type === "app" ? APP_CLIENT_SECRET : OAUTH_CLIENT_SECRET,
     code: code,
   };
 
@@ -30,3 +38,10 @@ export function authenticate(code: string): Promise<string> {
     return access_token;
   });
 }
+
+const PRIVATE_KEY = fs.readFileSync(
+  path.join(__dirname, "../../feedbackpro.2020-05-06.private-key.pem"),
+  "utf8"
+);
+
+export const app = new App({ id: APP_ID, privateKey: PRIVATE_KEY });
