@@ -19,19 +19,24 @@ const Query: QueryResolvers = {
 };
 
 const Mutation: MutationResolvers = {
-  githubAuthenticate: async (_parent, args, context: ContextWithDBModel) => {
-    const { code, userType = "User" } = args;
+  githubUserAuthenticate: async (
+    _parent,
+    args,
+    context: ContextWithDBModel
+  ) => {
+    const { code } = args;
 
-    const accessToken = await authenticate(code);
+    const githubUserAccessToken = await authenticate(code, "user");
 
-    const loggedInUser = await getLoggedInUser(context.req.githubAccessToken);
+    const loggedInUser = await getLoggedInUser(accessToken);
 
     const query = {
       name: loggedInUser.name,
       username: loggedInUser.username,
       avatarUrl: loggedInUser.avatarUrl,
       publicEmail: loggedInUser.email,
-      userType: userType === "User" ? 0 : 1,
+      // userType is for normal user
+      userType: 0,
     };
 
     const update = { expire: new Date() };
@@ -41,7 +46,7 @@ const Mutation: MutationResolvers = {
     await context.db.User.findOneAndUpdate(query, update, options);
 
     // create tokens to set in cokkies
-    const token = createToken(accessToken);
+    const token = createToken({ githubUserAccessToken });
 
     /* Store the tokens in cookies  */
     let cookieAttributes = {};

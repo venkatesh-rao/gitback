@@ -129,7 +129,7 @@
         "description": null,
         "fields": [
           {
-            "name": "githubAuthenticate",
+            "name": "githubUserAuthenticate",
             "description": null,
             "args": [
               {
@@ -143,16 +143,6 @@
                     "name": "String",
                     "ofType": null
                   }
-                },
-                "defaultValue": null
-              },
-              {
-                "name": "userType",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
                 },
                 "defaultValue": null
               }

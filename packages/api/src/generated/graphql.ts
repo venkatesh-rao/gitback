@@ -27,13 +27,12 @@ export type Query = {
 
 export type Mutation = {
    __typename?: 'Mutation';
-  githubAuthenticate: Scalars['String'];
+  githubUserAuthenticate: Scalars['String'];
 };
 
 
-export type MutationGithubAuthenticateArgs = {
+export type MutationGithubUserAuthenticateArgs = {
   code: Scalars['String'];
-  userType?: Maybe<Scalars['String']>;
 };
 
 export enum CacheControlScope {
@@ -149,7 +148,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
-  githubAuthenticate?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationGithubAuthenticateArgs, 'code'>>,
+  githubUserAuthenticate?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationGithubUserAuthenticateArgs, 'code'>>,
 }>;
 
 export interface UploadScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Upload'], any> {
