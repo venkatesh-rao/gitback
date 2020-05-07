@@ -6,7 +6,8 @@ import { IStatusModel } from "./database/model/StatusModel";
 import { IProductModel } from "./database/model/ProductModel";
 
 export interface AccessToken {
-  githubAccessToken?: string;
+  githubUserAccessToken?: string;
+  githubAppAccessToken?: string;
 }
 
 interface DB {
