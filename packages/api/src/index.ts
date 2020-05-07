@@ -76,13 +76,14 @@ app.use(async (req, res, next) => {
       process.env.ACCESS_TOKEN_SECRET || ""
     ) as AccessToken;
 
-    if (!data || !data.githubAccessToken) {
+    if (!data || (!data.githubUserAccessToken && !data.githubAppAccessToken)) {
       throw new Error("Unauthorized user!");
     }
 
-    (req as any).githubAccessToken = data.githubAccessToken;
+    (req as any).githubUserAccessToken = data.githubUserAccessToken;
+    (req as any).githubAppAccessToken = data.githubAppAccessToken;
 
-    const token = createToken(data.githubAccessToken);
+    const token = createToken(data);
 
     let cookieAttributes = {};
 

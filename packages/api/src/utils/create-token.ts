@@ -1,8 +1,9 @@
 import { sign } from "jsonwebtoken";
+import { AccessToken } from "../types";
 
-function createToken(githubAccessToken: string) {
+function createToken(params: AccessToken) {
   const { ACCESS_TOKEN_SECRET = "" } = process.env;
-  const accessToken = sign({ githubAccessToken }, ACCESS_TOKEN_SECRET, {
+  const accessToken = sign(params, ACCESS_TOKEN_SECRET, {
     expiresIn: "30d",
   });
 
