@@ -1,12 +1,16 @@
-interface AuthPayload {
-  accessToken: string;
-  refreshToken?: string;
+export interface GithubUserAuthenticateData {
+  githubUserAuthenticate: string;
 }
 
-export interface GithubAuthenticateData {
-  githubAuthenticate: AuthPayload;
-}
-
-export interface GithubAuthenticateVars {
+export interface GithubUserAuthenticateVars {
   code: string;
+}
+
+export interface GithubAppAuthenticateData {
+  githubAppAuthenticate: string;
+}
+
+export interface GithubAppAuthenticateVars {
+  code: string;
+  installationId: string;
 }
