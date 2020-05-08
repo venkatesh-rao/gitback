@@ -35,7 +35,7 @@ const Mutation: MutationResolvers = {
       username: loggedInUser.username,
       avatarUrl: loggedInUser.avatarUrl,
       publicEmail: loggedInUser.email,
-      // userType is for normal user
+      // userType is 0 for normal user
       userType: 0,
     };
 
@@ -47,6 +47,44 @@ const Mutation: MutationResolvers = {
 
     // create tokens to set in cokkies
     const token = createToken({ githubUserAccessToken });
+
+    /* Store the tokens in cookies  */
+    let cookieAttributes = {};
+
+    context.res.cookie("gitback-at", token, {
+      ...cookieAttributes,
+      // expires in 40 days
+      maxAge: 3456000000,
+    });
+
+    return token;
+  },
+  githubAppAuthenticate: async (_parent, args, context: ContextWithDBModel) => {
+    const { code, installationId } = args;
+
+    const githubAppAccessToken = await authenticate(code, "app");
+
+    const loggedInUser = await getLoggedInUser(githubAppAccessToken);
+
+    const query = {
+      name: loggedInUser.name,
+      username: loggedInUser.username,
+      avatarUrl: loggedInUser.avatarUrl,
+      publicEmail: loggedInUser.email,
+      // only app/product owner has installation id
+      installationId,
+      // userType is 1 for app/product owner
+      userType: 1,
+    };
+
+    const update = { expire: new Date() };
+    const options = { upsert: true, new: true, setDefaultsOnInsert: true };
+
+    // Find the document
+    await context.db.User.findOneAndUpdate(query, update, options);
+
+    // create tokens to set in cokkies
+    const token = createToken({ githubAppAccessToken });
 
     /* Store the tokens in cookies  */
     let cookieAttributes = {};

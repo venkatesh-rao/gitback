@@ -24,6 +24,7 @@ const typeDefs: DocumentNode = gql`
   # clients can execute, along with the return type for each.
   type Mutation {
     githubUserAuthenticate(code: String!): String!
+    githubAppAuthenticate(code: String!, installationId: String!): String!
   }
 `;
 
