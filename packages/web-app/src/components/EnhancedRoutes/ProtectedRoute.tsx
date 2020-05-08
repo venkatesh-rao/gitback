@@ -5,18 +5,8 @@ import {
   RouteProps,
   RouteComponentProps,
 } from "react-router-dom";
-import { gql, useQuery } from "@apollo/client";
-
-const LOGGED_IN_USER_QUERY = gql`
-  query {
-    me {
-      name
-      username
-      email
-      avatarUrl
-    }
-  }
-`;
+import { useQuery } from "@apollo/client";
+import { LOGGED_IN_USER_QUERY } from "./query";
 
 interface IUser {
   name?: string;
