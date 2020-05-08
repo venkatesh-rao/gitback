@@ -7,6 +7,6 @@ export async function getLoggedInUser(accessToken: string) {
     username: userData.login,
     avatarUrl: userData.avatar_url,
     name: userData.name,
-    email: userData.email,
+    publicEmail: userData.email,
   };
 }

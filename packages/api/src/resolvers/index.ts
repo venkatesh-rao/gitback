@@ -5,16 +5,24 @@ import {
 } from "../generated/graphql";
 import { ContextWithDBModel } from "../types";
 import createToken from "../utils/create-token";
-import { authenticate } from "../utils/github";
+import { authenticate, app } from "../utils/github";
 import { getLoggedInUser } from "./user";
+import { getAppRepositories } from "./repositories";
 
 const Query: QueryResolvers = {
   me: (_parent, _args, context: ContextWithDBModel) => {
-    if (!context.req.githubAccessToken) {
-      throw new Error("Unauthorized request");
+    if (!context.req.githubUserAccessToken) {
+      throw new Error("Unauthorized user request");
     }
 
-    return getLoggedInUser(context.req.githubAccessToken);
+    return getLoggedInUser(context.req.githubUserAccessToken);
+  },
+  listAppRepositories: (_parent, _args, context: ContextWithDBModel) => {
+    if (!context.req.githubAppAccessToken) {
+      throw new Error("Unauthorized app request");
+    }
+
+    return getAppRepositories(context.req.githubAppAccessToken);
   },
 };
 
@@ -34,7 +42,7 @@ const Mutation: MutationResolvers = {
       name: loggedInUser.name,
       username: loggedInUser.username,
       avatarUrl: loggedInUser.avatarUrl,
-      publicEmail: loggedInUser.email,
+      publicEmail: loggedInUser.publicEmail,
       // userType is 0 for normal user
       userType: 0,
     };
@@ -62,15 +70,19 @@ const Mutation: MutationResolvers = {
   githubAppAuthenticate: async (_parent, args, context: ContextWithDBModel) => {
     const { code, installationId } = args;
 
-    const githubAppAccessToken = await authenticate(code, "app");
+    const githubUserAccessToken = await authenticate(code, "app");
 
-    const loggedInUser = await getLoggedInUser(githubAppAccessToken);
+    const githubAppAccessToken = await app.getInstallationAccessToken({
+      installationId,
+    });
+
+    const loggedInUser = await getLoggedInUser(githubUserAccessToken);
 
     const query = {
       name: loggedInUser.name,
       username: loggedInUser.username,
       avatarUrl: loggedInUser.avatarUrl,
-      publicEmail: loggedInUser.email,
+      publicEmail: loggedInUser.publicEmail,
       // only app/product owner has installation id
       installationId,
       // userType is 1 for app/product owner
@@ -84,7 +96,7 @@ const Mutation: MutationResolvers = {
     await context.db.User.findOneAndUpdate(query, update, options);
 
     // create tokens to set in cokkies
-    const token = createToken({ githubAppAccessToken });
+    const token = createToken({ githubUserAccessToken, githubAppAccessToken });
 
     /* Store the tokens in cookies  */
     let cookieAttributes = {};

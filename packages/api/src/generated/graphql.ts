@@ -20,9 +20,20 @@ export type User = {
   email?: Maybe<Scalars['String']>;
 };
 
+export type Repository = {
+   __typename?: 'Repository';
+  id: Scalars['Float'];
+  nodeId: Scalars['String'];
+  name: Scalars['String'];
+  fullName: Scalars['String'];
+  private: Scalars['Boolean'];
+  description?: Maybe<Scalars['String']>;
+};
+
 export type Query = {
    __typename?: 'Query';
   me: User;
+  listAppRepositories: Array<Repository>;
 };
 
 export type Mutation = {
@@ -125,6 +136,8 @@ export type ResolversTypes = ResolversObject<{
   String: ResolverTypeWrapper<Scalars['String']>,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
   User: ResolverTypeWrapper<User>,
+  Repository: ResolverTypeWrapper<Repository>,
+  Float: ResolverTypeWrapper<Scalars['Float']>,
   Query: ResolverTypeWrapper<{}>,
   Mutation: ResolverTypeWrapper<{}>,
   CacheControlScope: CacheControlScope,
@@ -136,6 +149,8 @@ export type ResolversParentTypes = ResolversObject<{
   String: Scalars['String'],
   Boolean: Scalars['Boolean'],
   User: User,
+  Repository: Repository,
+  Float: Scalars['Float'],
   Query: {},
   Mutation: {},
   CacheControlScope: CacheControlScope,
@@ -150,8 +165,19 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;
 
+export type RepositoryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Repository'] = ResolversParentTypes['Repository']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['Float'], ParentType, ContextType>,
+  nodeId?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  fullName?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  private?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
+  listAppRepositories?: Resolver<Array<ResolversTypes['Repository']>, ParentType, ContextType>,
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
@@ -165,6 +191,7 @@ export interface UploadScalarConfig extends GraphQLScalarTypeConfig<ResolversTyp
 
 export type Resolvers<ContextType = any> = ResolversObject<{
   User?: UserResolvers<ContextType>,
+  Repository?: RepositoryResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   Upload?: GraphQLScalarType,

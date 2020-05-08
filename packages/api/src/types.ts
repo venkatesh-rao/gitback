@@ -19,11 +19,21 @@ interface DB {
 }
 
 interface RequestWithCookies extends Request {
-  githubAccessToken: string;
+  githubUserAccessToken: string;
+  githubAppAccessToken: string;
 }
 
 export interface ContextWithDBModel {
   req: RequestWithCookies;
   res: Response<any>;
   db: DB;
+}
+
+export interface GithubRepository {
+  id: number;
+  node_id: string;
+  name: string;
+  full_name: string;
+  private: boolean;
+  description?: string;
 }

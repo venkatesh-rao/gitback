@@ -11,13 +11,23 @@ const typeDefs: DocumentNode = gql`
     username: String!
     avatarUrl: String!
     name: String
-    email: String
+    publicEmail: String
+  }
+
+  type Repository {
+    id: Float!
+    nodeId: String!
+    name: String!
+    fullName: String!
+    private: Boolean!
+    description: String
   }
 
   # The "Query" type is special: it lists all of the available queries that
   # clients can execute, along with the return type for each.
   type Query {
     me: User!
+    listAppRepositories: [Repository!]!
   }
 
   # The "Mutation" type is special: it lists all of the available mutations that
