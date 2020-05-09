@@ -6,8 +6,10 @@ import { IStatusModel } from "./database/model/StatusModel";
 import { IProductModel } from "./database/model/ProductModel";
 
 export interface AccessToken {
+  userId: string;
+  username: string;
+  installationId?: number;
   githubUserAccessToken?: string;
-  githubAppAccessToken?: string;
 }
 
 interface DB {
@@ -19,8 +21,10 @@ interface DB {
 }
 
 interface RequestWithCookies extends Request {
-  githubUserAccessToken: string;
-  githubAppAccessToken: string;
+  userId: string;
+  username: string;
+  installationId?: number;
+  githubUserAccessToken?: string;
 }
 
 export interface ContextWithDBModel {

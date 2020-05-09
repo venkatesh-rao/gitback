@@ -76,12 +76,14 @@ app.use(async (req, res, next) => {
       process.env.ACCESS_TOKEN_SECRET || ""
     ) as AccessToken;
 
-    if (!data || (!data.githubUserAccessToken && !data.githubAppAccessToken)) {
+    if (!data || (!data.githubUserAccessToken && !data.installationId)) {
       throw new Error("Unauthorized user!");
     }
 
     (req as any).githubUserAccessToken = data.githubUserAccessToken;
-    (req as any).githubAppAccessToken = data.githubAppAccessToken;
+    (req as any).userId = data.userId;
+    (req as any).username = data.username;
+    (req as any).installationId = data.installationId;
 
     const token = createToken(data);
 

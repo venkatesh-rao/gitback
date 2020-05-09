@@ -11,18 +11,22 @@ import { getAppRepositories } from "./repositories";
 
 const Query: QueryResolvers = {
   me: (_parent, _args, context: ContextWithDBModel) => {
-    if (!context.req.githubUserAccessToken) {
+    if (!context.req.githubUserAccessToken || !context.req.userId) {
       throw new Error("Unauthorized user request");
     }
 
-    return getLoggedInUser(context.req.githubUserAccessToken);
+    return getLoggedInUser(context);
   },
-  listAppRepositories: (_parent, _args, context: ContextWithDBModel) => {
-    if (!context.req.githubAppAccessToken) {
+  listAppRepositories: async (_parent, _args, context: ContextWithDBModel) => {
+    if (!context.req.installationId) {
       throw new Error("Unauthorized app request");
     }
 
-    return getAppRepositories(context.req.githubAppAccessToken);
+    const githubAppAccessToken = await app.getInstallationAccessToken({
+      installationId: context.req.installationId,
+    });
+
+    return getAppRepositories(githubAppAccessToken);
   },
 };
 
@@ -36,7 +40,7 @@ const Mutation: MutationResolvers = {
 
     const githubUserAccessToken = await authenticate(code, "user");
 
-    const loggedInUser = await getLoggedInUser(githubUserAccessToken);
+    const loggedInUser = await getLoggedInUser(context);
 
     const query = {
       name: loggedInUser.name,
@@ -47,14 +51,24 @@ const Mutation: MutationResolvers = {
       userType: 0,
     };
 
-    const update = { expire: new Date() };
-    const options = { upsert: true, new: true, setDefaultsOnInsert: true };
-
     // Find the document
-    await context.db.User.findOneAndUpdate(query, update, options);
+    let user = await context.db.User.findOne({
+      username: loggedInUser.username,
+    });
+
+    if (!user) {
+      user = await new context.db.User(query).save();
+    }
+
+    const { _id: userId, username, installationId } = user;
 
     // create tokens to set in cokkies
-    const token = createToken({ githubUserAccessToken });
+    const token = createToken({
+      userId,
+      username,
+      installationId,
+      githubUserAccessToken,
+    });
 
     /* Store the tokens in cookies  */
     let cookieAttributes = {};
@@ -68,35 +82,31 @@ const Mutation: MutationResolvers = {
     return token;
   },
   githubAppAuthenticate: async (_parent, args, context: ContextWithDBModel) => {
-    const { code, installationId } = args;
+    const { installationId } = args;
 
-    const githubUserAccessToken = await authenticate(code, "app");
+    const loggedInUser = context.req;
 
-    const githubAppAccessToken = await app.getInstallationAccessToken({
-      installationId,
-    });
-
-    const loggedInUser = await getLoggedInUser(githubUserAccessToken);
+    if (!loggedInUser.userId || !loggedInUser.username) {
+      throw new Error("Unauthorized user request");
+    }
 
     const query = {
-      name: loggedInUser.name,
+      _id: loggedInUser.userId,
       username: loggedInUser.username,
-      avatarUrl: loggedInUser.avatarUrl,
-      publicEmail: loggedInUser.publicEmail,
-      // only app/product owner has installation id
-      installationId,
-      // userType is 1 for app/product owner
-      userType: 1,
     };
 
-    const update = { expire: new Date() };
-    const options = { upsert: true, new: true, setDefaultsOnInsert: true };
+    const update = { installationId, userType: 1 };
 
     // Find the document
-    await context.db.User.findOneAndUpdate(query, update, options);
+    await context.db.User.findOneAndUpdate(query, update);
 
     // create tokens to set in cokkies
-    const token = createToken({ githubUserAccessToken, githubAppAccessToken });
+    const token = createToken({
+      userId: loggedInUser.userId,
+      username: loggedInUser.username,
+      githubUserAccessToken: loggedInUser.githubUserAccessToken,
+      installationId,
+    });
 
     /* Store the tokens in cookies  */
     let cookieAttributes = {};
