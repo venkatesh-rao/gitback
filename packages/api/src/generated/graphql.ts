@@ -17,7 +17,8 @@ export type User = {
   username: Scalars['String'];
   avatarUrl: Scalars['String'];
   name?: Maybe<Scalars['String']>;
-  email?: Maybe<Scalars['String']>;
+  publicEmail?: Maybe<Scalars['String']>;
+  installationId?: Maybe<Scalars['Float']>;
 };
 
 export type Repository = {
@@ -49,8 +50,7 @@ export type MutationGithubUserAuthenticateArgs = {
 
 
 export type MutationGithubAppAuthenticateArgs = {
-  code: Scalars['String'];
-  installationId: Scalars['String'];
+  installationId: Scalars['Float'];
 };
 
 export enum CacheControlScope {
@@ -136,8 +136,8 @@ export type ResolversTypes = ResolversObject<{
   String: ResolverTypeWrapper<Scalars['String']>,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
   User: ResolverTypeWrapper<User>,
-  Repository: ResolverTypeWrapper<Repository>,
   Float: ResolverTypeWrapper<Scalars['Float']>,
+  Repository: ResolverTypeWrapper<Repository>,
   Query: ResolverTypeWrapper<{}>,
   Mutation: ResolverTypeWrapper<{}>,
   CacheControlScope: CacheControlScope,
@@ -149,8 +149,8 @@ export type ResolversParentTypes = ResolversObject<{
   String: Scalars['String'],
   Boolean: Scalars['Boolean'],
   User: User,
-  Repository: Repository,
   Float: Scalars['Float'],
+  Repository: Repository,
   Query: {},
   Mutation: {},
   CacheControlScope: CacheControlScope,
@@ -161,7 +161,8 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   avatarUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  publicEmail?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
+  installationId?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;
 
@@ -182,7 +183,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   githubUserAuthenticate?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationGithubUserAuthenticateArgs, 'code'>>,
-  githubAppAuthenticate?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationGithubAppAuthenticateArgs, 'code' | 'installationId'>>,
+  githubAppAuthenticate?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationGithubAppAuthenticateArgs, 'installationId'>>,
 }>;
 
 export interface UploadScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Upload'], any> {
