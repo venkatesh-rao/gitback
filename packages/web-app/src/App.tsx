@@ -6,6 +6,8 @@ import Home from "./views/Home";
 import Login from "./views/Login";
 import ProtectedRoute from "./components/EnhancedRoutes/ProtectedRoute";
 import PublicRoute from "./components/EnhancedRoutes/PublicRoute";
+import Install from "./views/Install";
+import ListRepositories from "./views/ListRepositories/ListRepositories";
 
 function App() {
   return (
@@ -15,6 +17,12 @@ function App() {
           <PublicRoute exact path="/login">
             <Login />
           </PublicRoute>
+          <ProtectedRoute exact path="/install">
+            <Install />
+          </ProtectedRoute>
+          <ProtectedRoute exact path="/repos">
+            <ListRepositories />
+          </ProtectedRoute>
           <ProtectedRoute exact path="/">
             <Home />
           </ProtectedRoute>
