@@ -1,20 +1,19 @@
 import React from "react";
-import { useLocation, Redirect } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { useMutation } from "@apollo/client";
-import {
-  GITHUB_USER_AUTHENTICATE_QUERY,
-  GITHUB_APP_AUTHENTICATE_QUERY,
-} from "./query";
+import { GITHUB_USER_AUTHENTICATE_QUERY } from "./query";
 import {
   GithubUserAuthenticateVars,
   GithubUserAuthenticateData,
-  GithubAppAuthenticateData,
-  GithubAppAuthenticateVars,
 } from "./types";
 import { FaGithub } from "react-icons/fa";
 import DeveloperActivity from "../../assets/img/developer-activity.png";
+import { useQueryParams } from "../../utils";
 
-const { REACT_APP_GITHUB_APP_NAME } = process.env;
+const {
+  REACT_APP_GITHUB_OAUTH_CLIENT_ID,
+  REACT_APP_REDIRECT_URI,
+} = process.env;
 
 interface IFeature {
   title: string;
@@ -37,70 +36,37 @@ const features: IFeature[] = [
   },
 ];
 
-// A custom hook that builds on useLocation to parse
-// the query string for you.
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
-
 function Login() {
-  const query = useQuery();
+  const queryParams = useQueryParams();
 
-  const code = query.get("code");
-  const installationId = query.get("installation_id");
+  const code = queryParams.get("code");
 
   const [isSuccess, setSuccess] = React.useState(false);
 
   const [
-    githubAuthenticate,
-    { loading: githubAuthenticateLoading },
+    githubUserAuthenticate,
+    { loading: githubUserAuthenticateLoading },
   ] = useMutation<GithubUserAuthenticateData, GithubUserAuthenticateVars>(
     GITHUB_USER_AUTHENTICATE_QUERY
   );
 
-  const [
-    githubAppAuthenticate,
-    { loading: githubAppAuthenticateLoading },
-  ] = useMutation<GithubAppAuthenticateData, GithubAppAuthenticateVars>(
-    GITHUB_APP_AUTHENTICATE_QUERY
-  );
-
   async function loginAsUser(code: string) {
     try {
-      const response = await githubAuthenticate({
+      const response = await githubUserAuthenticate({
         variables: {
           code,
         },
       });
 
-      if (response && response.data && response.data.githubAuthenticate) {
-        setSuccess(true);
-      }
-    } catch (error) {}
-  }
-
-  async function loginAsApp(code: string, installationId: string) {
-    try {
-      const response = await githubAppAuthenticate({
-        variables: {
-          code,
-          installationId,
-        },
-      });
-
-      if (response && response.data && response.data.githubAppAuthenticate) {
+      if (response && response.data && response.data.githubUserAuthenticate) {
         setSuccess(true);
       }
     } catch (error) {}
   }
 
   React.useEffect(() => {
-    if (code && !installationId) {
+    if (code) {
       loginAsUser(code);
-      return;
-    }
-    if (code && installationId) {
-      loginAsApp(code, installationId);
       return;
     }
   }, []);
@@ -109,7 +75,7 @@ function Login() {
     return <Redirect to="/" />;
   }
 
-  if (githubAppAuthenticateLoading || githubAuthenticateLoading) {
+  if (githubUserAuthenticateLoading) {
     return <p>loading...</p>;
   }
 
@@ -134,7 +100,7 @@ function Login() {
             />
             <a
               className="bg-gray-800 text-white duration-300 ease-in-out font-semibold py-2 px-4 border border-gray-400 rounded shadow inline-flex items-center transform hover:-translate-y-px hover:scale-105"
-              href={`https://github.com/apps/${REACT_APP_GITHUB_APP_NAME}/installations/new`}
+              href={`https://github.com/login/oauth/authorize?client_id=${REACT_APP_GITHUB_OAUTH_CLIENT_ID}&redirect_uri=${REACT_APP_REDIRECT_URI}&scope=user,repo`}
             >
               <FaGithub className="mr-2" />
               Login with Github
