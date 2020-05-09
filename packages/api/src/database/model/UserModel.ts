@@ -14,6 +14,7 @@ const UserSchema = new Schema(
     },
     avatarUrl: {
       type: String,
+      required: true,
     },
     publicEmail: {
       type: String,
@@ -25,7 +26,7 @@ const UserSchema = new Schema(
       required: true,
     },
     installationId: {
-      type: String,
+      type: Number,
     },
   },
   {
@@ -42,9 +43,9 @@ enum UserType {
 interface IUserSchema extends Document {
   name?: string;
   username: string;
-  avatarUrl?: string;
+  avatarUrl: string;
   publicEmail?: string;
-  installationId?: string;
+  installationId?: number;
   userType: UserType;
 }
 
