@@ -1,8 +1,8 @@
 import Axios from "axios";
 import querystring from "querystring";
-const { App } = require("@octokit/app");
-const fs = require("fs");
-const path = require("path");
+import { App } from "@octokit/app";
+import fs from "fs";
+import path from "path";
 
 const {
   APP_CLIENT_ID,
@@ -44,4 +44,4 @@ const PRIVATE_KEY = fs.readFileSync(
   "utf8"
 );
 
-export const app = new App({ id: APP_ID, privateKey: PRIVATE_KEY });
+export const app = new App({ id: Number(APP_ID), privateKey: PRIVATE_KEY });
