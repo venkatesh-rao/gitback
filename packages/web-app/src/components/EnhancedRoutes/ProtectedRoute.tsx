@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { LOGGED_IN_USER_QUERY } from "./query";
+import Layout from "../../layout";
 
 interface IUser {
   name?: string;
@@ -14,9 +15,10 @@ interface IUser {
   avatarUrl?: string;
   publicEmail?: string;
   userType: string;
+  installationId?: number;
 }
 
-interface LoggedInUserProps {
+export interface LoggedInUserProps {
   loggedInUser?: IUser;
 }
 
@@ -43,7 +45,9 @@ const ProtectedRoute = ({ children, ...rest }: EnhancedRouterProps) => {
 
   return (
     <Route {...rest}>
-      {React.cloneElement(children as any, { loggedInUser: data.me })}
+      <Layout loggedInUser={data.me}>
+        {React.cloneElement(children as any, { loggedInUser: data.me })}
+      </Layout>
     </Route>
   );
 };
