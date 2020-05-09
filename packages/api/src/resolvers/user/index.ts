@@ -1,12 +1,15 @@
-import { get } from "../../utils/http-request";
+import { ContextWithDBModel } from "../../types";
 
-export async function getLoggedInUser(accessToken: string) {
-  const userData = await get("/user", accessToken);
+export async function getLoggedInUser(context: ContextWithDBModel) {
+  const user = await context.db.User.findById(context.req.userId);
+
+  const { username, avatarUrl, name, publicEmail, installationId } = user!;
 
   return {
-    username: userData.login,
-    avatarUrl: userData.avatar_url,
-    name: userData.name,
-    publicEmail: userData.email,
+    username,
+    avatarUrl,
+    name,
+    publicEmail,
+    installationId,
   };
 }

@@ -12,6 +12,7 @@ const typeDefs: DocumentNode = gql`
     avatarUrl: String!
     name: String
     publicEmail: String
+    installationId: Float
   }
 
   type Repository {
@@ -34,7 +35,7 @@ const typeDefs: DocumentNode = gql`
   # clients can execute, along with the return type for each.
   type Mutation {
     githubUserAuthenticate(code: String!): String!
-    githubAppAuthenticate(code: String!, installationId: String!): String!
+    githubAppAuthenticate(installationId: Float!): String!
   }
 `;
 
