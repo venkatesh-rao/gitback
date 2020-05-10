@@ -7,7 +7,8 @@ import Login from "./views/Login";
 import ProtectedRoute from "./components/EnhancedRoutes/ProtectedRoute";
 import PublicRoute from "./components/EnhancedRoutes/PublicRoute";
 import Install from "./views/Install";
-import ListRepositories from "./views/ListRepositories/ListRepositories";
+import ListRepositories from "./views/ListRepositories";
+import CreateProduct from "./views/CreateProduct";
 
 function App() {
   return (
@@ -22,6 +23,9 @@ function App() {
           </ProtectedRoute>
           <ProtectedRoute exact path="/repos">
             <ListRepositories />
+          </ProtectedRoute>
+          <ProtectedRoute exact path="/create-product">
+            <CreateProduct />
           </ProtectedRoute>
           <ProtectedRoute exact path="/">
             <Home />
