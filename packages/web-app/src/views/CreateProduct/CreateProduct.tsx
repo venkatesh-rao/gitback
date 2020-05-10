@@ -10,13 +10,15 @@ import {
 import * as Yup from "yup";
 import { ListAppRepositoriesData } from "../ListRepositories/types";
 import { LIST_REPOSITORIES_QUERY } from "../ListRepositories/query";
-import { useQuery } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
+import { CREATE_PRODUCT_MUTATION } from "./query";
+import { CreateProductData, CreateProductVars } from "./types";
 
 interface CreateProductProps {}
 
 interface CreateProductValues {
   productName: string;
-  repository: string;
+  repositoryName: string;
 }
 
 const CreateProductSchema = Yup.object().shape({
@@ -24,12 +26,49 @@ const CreateProductSchema = Yup.object().shape({
     .min(2, "Too Short!")
     .max(50, "Too Long!")
     .required("Required"),
-  repository: Yup.string().required("Required"),
+  repositoryName: Yup.string().required("Required"),
 });
 
 const CreateProduct: React.FC<CreateProductProps> = (props) => {
   const { data, loading, error } = useQuery<ListAppRepositoriesData>(
     LIST_REPOSITORIES_QUERY
+  );
+
+  const [createProduct, { loading: createProductLoading }] = useMutation<
+    CreateProductData,
+    CreateProductVars
+  >(CREATE_PRODUCT_MUTATION);
+
+  const handleSubmit = React.useCallback(
+    async (
+      values: CreateProductValues,
+      actions: FormikHelpers<CreateProductValues>
+    ) => {
+      if (createProductLoading) {
+        return;
+      }
+
+      const { productName, repositoryName } = values;
+
+      try {
+        const response = await createProduct({
+          variables: {
+            productName,
+            repositoryName,
+          },
+        });
+
+        if (response && response.data && response.data.createProduct) {
+          alert("successfully created a product");
+        }
+      } catch (err) {
+        alert("error creating a product");
+        console.log(err);
+      }
+      actions.setSubmitting(false);
+      actions.resetForm();
+    },
+    [createProduct, createProductLoading]
   );
 
   if (loading) {
@@ -48,7 +87,7 @@ const CreateProduct: React.FC<CreateProductProps> = (props) => {
 
   const initialValues: CreateProductValues = {
     productName: "",
-    repository: "",
+    repositoryName: "",
   };
 
   return (
@@ -56,16 +95,11 @@ const CreateProduct: React.FC<CreateProductProps> = (props) => {
       <h2 className="text-xl font-semibold mb-4 text-center text-purple-700">
         Create a product
       </h2>
+
       <Formik
         initialValues={initialValues}
         validationSchema={CreateProductSchema}
-        onSubmit={(
-          values: CreateProductValues,
-          actions: FormikHelpers<CreateProductValues>
-        ) => {
-          alert(JSON.stringify(values, null, 2));
-          actions.setSubmitting(false);
-        }}
+        onSubmit={handleSubmit}
         render={(formProps: FormikProps<CreateProductValues>) => {
           return (
             <Form>
@@ -98,14 +132,14 @@ const CreateProduct: React.FC<CreateProductProps> = (props) => {
                     );
                   }}
                 </Field>
-                <Field name="repository">
+                <Field name="repositoryName">
                   {({ field, meta }: FieldProps) => {
                     return (
                       <div className="mb-5">
                         <div className="flex items-center justify-between mb-1">
                           <label
                             className="block text-gray-700 text-xs font-bold uppercase"
-                            htmlFor="repository"
+                            htmlFor="repositoryName"
                           >
                             Repository*
                           </label>
@@ -118,13 +152,13 @@ const CreateProduct: React.FC<CreateProductProps> = (props) => {
                         <div className="relative">
                           <select
                             className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none"
-                            id="repository"
+                            id="repositoryName"
                             {...field}
                           >
                             <option value="">Select a repository</option>
                             {data.listAppRepositories.map((repo) => {
                               return (
-                                <option key={repo.id} value={repo.id}>
+                                <option key={repo.id} value={repo.fullName}>
                                   {repo.name}
                                 </option>
                               );

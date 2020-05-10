@@ -9,7 +9,7 @@ import { useQuery } from "@apollo/client";
 import { LOGGED_IN_USER_QUERY } from "./query";
 import Layout from "../../layout";
 
-interface IUser {
+export interface IUser {
   name?: string;
   username: string;
   avatarUrl?: string;
