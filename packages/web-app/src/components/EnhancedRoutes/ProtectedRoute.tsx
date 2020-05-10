@@ -39,7 +39,7 @@ const ProtectedRoute = ({ children, ...rest }: EnhancedRouterProps) => {
     return <p>Loading</p>;
   }
 
-  if (error || !data) {
+  if (error || (!data && !data.me)) {
     return <Redirect to="/login" />;
   }
 

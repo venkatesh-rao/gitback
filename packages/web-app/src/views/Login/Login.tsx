@@ -80,7 +80,7 @@ function Login() {
   }
 
   return (
-    <div className="bg-gray-100 h-screen flex items-center">
+    <div className="bg-purple-100 h-screen flex items-center">
       <div
         className="bg-white max-w-5xl rounded overflow-hidden m-auto"
         style={{
