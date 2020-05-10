@@ -24,6 +24,15 @@ const typeDefs: DocumentNode = gql`
     description: String
   }
 
+  type Product {
+    id: ID!
+    name: String!
+    slug: String!
+    repositoryName: String!
+    owner: User!
+    developers: [User!]
+  }
+
   # The "Query" type is special: it lists all of the available queries that
   # clients can execute, along with the return type for each.
   type Query {
@@ -36,6 +45,8 @@ const typeDefs: DocumentNode = gql`
   type Mutation {
     githubUserAuthenticate(code: String!): String!
     githubAppAuthenticate(installationId: Float!): String!
+
+    createProduct(productName: String!, repositoryName: String!): Product!
   }
 `;
 

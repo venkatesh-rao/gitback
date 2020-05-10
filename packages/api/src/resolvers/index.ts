@@ -8,6 +8,7 @@ import createToken from "../utils/create-token";
 import { authenticate, app } from "../utils/github";
 import { getLoggedInUser } from "./user";
 import { getAppRepositories } from "./repositories";
+import { createNewProduct } from "./product";
 
 const Query: QueryResolvers = {
   me: (_parent, _args, context: ContextWithDBModel) => {
@@ -118,6 +119,16 @@ const Mutation: MutationResolvers = {
     });
 
     return token;
+  },
+
+  createProduct: async (_parent, args, context: ContextWithDBModel) => {
+    if (!context.req.userId || !context.req.installationId) {
+      throw new Error("Unauthorized request");
+    }
+
+    const createdProduct = await createNewProduct(args, context);
+
+    return createdProduct;
   },
 };
 
