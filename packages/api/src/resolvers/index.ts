@@ -8,7 +8,8 @@ import createToken from "../utils/create-token";
 import { authenticate, app } from "../utils/github";
 import { getLoggedInUser, getLoggedInUserFromGithub } from "./user";
 import { getAppRepositories } from "./repositories";
-import { createNewProduct } from "./product";
+import { createNewProduct, getProductDetails } from "./product";
+import { addNewFeedback, getProductFeedbacks } from "./feedback";
 
 const Query: QueryResolvers = {
   me: (_parent, _args, context: ContextWithDBModel) => {
@@ -18,6 +19,7 @@ const Query: QueryResolvers = {
 
     return getLoggedInUser(context);
   },
+
   listAppRepositories: async (_parent, _args, context: ContextWithDBModel) => {
     if (!context.req.installationId) {
       throw new Error("Unauthorized app request");
@@ -28,6 +30,13 @@ const Query: QueryResolvers = {
     });
 
     return getAppRepositories(githubAppAccessToken);
+  },
+
+  getProduct: async (_parent, args, context: ContextWithDBModel) => {
+    return getProductDetails(args, context);
+  },
+  getProductFeedbacks: async (_parent, args, context: ContextWithDBModel) => {
+    return getProductFeedbacks(args, context);
   },
 };
 
@@ -133,6 +142,12 @@ const Mutation: MutationResolvers = {
     const createdProduct = await createNewProduct(args, context);
 
     return createdProduct;
+  },
+
+  addProductFeedback: async (_parent, args, context: ContextWithDBModel) => {
+    const createdFeedback = await addNewFeedback(args, context);
+
+    return createdFeedback;
   },
 };
 

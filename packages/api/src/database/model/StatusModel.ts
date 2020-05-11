@@ -3,11 +3,15 @@ import { Document, Model, model, Schema } from "mongoose";
 // Schema
 const StatusSchema = new Schema(
   {
-    label: {
+    slug: {
       type: String,
       unique: true,
       required: true,
       lowercase: true,
+    },
+    label: {
+      type: String,
+      required: true,
     },
     description: {
       type: String,
@@ -21,6 +25,7 @@ const StatusSchema = new Schema(
 // DO NOT export this
 interface IStatusSchema extends Document {
   label: string;
+  slug: string;
   description?: string;
 }
 

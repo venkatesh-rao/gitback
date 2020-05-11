@@ -26,6 +26,9 @@ const FeedbackSchema = new Schema(
     owner: {
       type: Schema.Types.ObjectId,
       ref: "User",
+    },
+    issueNumber: {
+      type: Number,
       required: true,
     },
   },
@@ -38,6 +41,7 @@ const FeedbackSchema = new Schema(
 interface IFeedbackSchema extends Document {
   title: string;
   description?: string;
+  issueNumber: number;
 }
 
 // DO NOT export

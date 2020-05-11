@@ -33,11 +33,36 @@ const typeDefs: DocumentNode = gql`
     developers: [User!]
   }
 
+  type Feedback {
+    id: ID!
+    title: String!
+    description: String
+    product: Product!
+    status: Status!
+    owner: User
+  }
+
+  type Status {
+    id: ID!
+    slug: String!
+    label: String!
+    description: String
+  }
+
+  input FeedbackInput {
+    title: String!
+    description: String
+  }
+
   # The "Query" type is special: it lists all of the available queries that
   # clients can execute, along with the return type for each.
   type Query {
     me: User!
+
     listAppRepositories: [Repository!]!
+
+    getProduct(productId: String!): Product!
+    getProductFeedbacks(productId: String!): [Feedback!]!
   }
 
   # The "Mutation" type is special: it lists all of the available mutations that
@@ -48,6 +73,8 @@ const typeDefs: DocumentNode = gql`
     logout: Boolean!
 
     createProduct(productName: String!, repositoryName: String!): Product!
+
+    addProductFeedback(productId: ID!, feedback: FeedbackInput!): Feedback!
   }
 `;
 

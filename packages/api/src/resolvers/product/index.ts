@@ -1,5 +1,8 @@
 import { ContextWithDBModel } from "../../types";
-import { MutationCreateProductArgs } from "../../generated/graphql";
+import {
+  MutationCreateProductArgs,
+  QueryGetProductArgs,
+} from "../../generated/graphql";
 import slugify from "slugify";
 import shortid from "shortid";
 
@@ -18,6 +21,35 @@ export async function createNewProduct(
     owner: context.req.userId,
     developers: [context.req.userId],
   }).save();
+
+  product = await product
+    .populate("owner")
+    .populate("developers")
+    .execPopulate();
+
+  const { _id: id, name, slug, repositoryName, owner, developers } = product;
+
+  return {
+    id,
+    name,
+    slug,
+    repositoryName,
+    owner,
+    developers,
+  };
+}
+
+export async function getProductDetails(
+  args: QueryGetProductArgs,
+  context: ContextWithDBModel
+) {
+  const { productId } = args;
+
+  let product = await context.db.Product.findById(productId);
+
+  if (!product) {
+    throw new Error("no such product");
+  }
 
   product = await product
     .populate("owner")
