@@ -45,6 +45,7 @@ const typeDefs: DocumentNode = gql`
   type Mutation {
     githubUserAuthenticate(code: String!): String!
     githubAppAuthenticate(installationId: Float!): String!
+    logout: Boolean!
 
     createProduct(productName: String!, repositoryName: String!): Product!
   }

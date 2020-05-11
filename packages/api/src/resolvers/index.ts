@@ -6,7 +6,7 @@ import {
 import { ContextWithDBModel } from "../types";
 import createToken from "../utils/create-token";
 import { authenticate, app } from "../utils/github";
-import { getLoggedInUser } from "./user";
+import { getLoggedInUser, getLoggedInUserFromGithub } from "./user";
 import { getAppRepositories } from "./repositories";
 import { createNewProduct } from "./product";
 
@@ -41,7 +41,7 @@ const Mutation: MutationResolvers = {
 
     const githubUserAccessToken = await authenticate(code, "user");
 
-    const loggedInUser = await getLoggedInUser(context);
+    const loggedInUser = await getLoggedInUserFromGithub(githubUserAccessToken);
 
     const query = {
       name: loggedInUser.name,
@@ -119,6 +119,10 @@ const Mutation: MutationResolvers = {
     });
 
     return token;
+  },
+  logout: (_parent, _args, context: ContextWithDBModel) => {
+    context.res.clearCookie("gitback-at");
+    return true;
   },
 
   createProduct: async (_parent, args, context: ContextWithDBModel) => {
