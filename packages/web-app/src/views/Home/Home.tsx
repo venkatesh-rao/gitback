@@ -1,16 +1,5 @@
 import React from "react";
-
-export interface IUser {
-  name?: string;
-  username: string;
-  avatarUrl?: string;
-  publicEmail?: string;
-  userType: string;
-}
-
-interface IHomeProps {
-  loggedInUser?: IUser;
-}
+import { IHomeProps } from "./types";
 
 const Home: React.FC<IHomeProps> = (props) => {
   const { loggedInUser } = props;

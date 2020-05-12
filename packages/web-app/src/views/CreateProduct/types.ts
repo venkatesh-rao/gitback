@@ -1,6 +1,6 @@
-import { IUser } from "../Home/Home";
+import { IUser } from "../Home/types";
 
-interface Product {
+export interface IProduct {
   id: string | any;
   name: string;
   slug: string;
@@ -10,7 +10,7 @@ interface Product {
 }
 
 export interface CreateProductData {
-  createProduct: Product;
+  createProduct: IProduct;
 }
 
 export interface CreateProductVars {
