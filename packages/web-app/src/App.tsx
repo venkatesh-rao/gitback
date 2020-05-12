@@ -1,6 +1,6 @@
 import { ApolloProvider } from "@apollo/client";
 import React from "react";
-import { BrowserRouter as Router, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import client from "./apollo/apollo-config";
 import Home from "./views/Home";
 import Login from "./views/Login";
@@ -9,6 +9,7 @@ import PublicRoute from "./components/EnhancedRoutes/PublicRoute";
 import Install from "./views/Install";
 import ListRepositories from "./views/ListRepositories";
 import CreateProduct from "./views/CreateProduct";
+import Product from "./views/Product";
 
 function App() {
   return (
@@ -27,6 +28,9 @@ function App() {
           <ProtectedRoute exact path="/create-product">
             <CreateProduct />
           </ProtectedRoute>
+          <Route exact path="/:productSlug">
+            <Product />
+          </Route>
           <ProtectedRoute exact path="/">
             <Home />
           </ProtectedRoute>
