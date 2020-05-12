@@ -597,7 +597,7 @@
             "description": null,
             "args": [
               {
-                "name": "productId",
+                "name": "productSlug",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",

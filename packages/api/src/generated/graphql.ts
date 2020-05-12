@@ -74,7 +74,7 @@ export type Query = {
 
 
 export type QueryGetProductArgs = {
-  productId: Scalars['String'];
+  productSlug: Scalars['String'];
 };
 
 
@@ -277,7 +277,7 @@ export type StatusResolvers<ContextType = any, ParentType extends ResolversParen
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
   listAppRepositories?: Resolver<Array<ResolversTypes['Repository']>, ParentType, ContextType>,
-  getProduct?: Resolver<ResolversTypes['Product'], ParentType, ContextType, RequireFields<QueryGetProductArgs, 'productId'>>,
+  getProduct?: Resolver<ResolversTypes['Product'], ParentType, ContextType, RequireFields<QueryGetProductArgs, 'productSlug'>>,
   getProductFeedbacks?: Resolver<Array<ResolversTypes['Feedback']>, ParentType, ContextType, RequireFields<QueryGetProductFeedbacksArgs, 'productId'>>,
 }>;
 

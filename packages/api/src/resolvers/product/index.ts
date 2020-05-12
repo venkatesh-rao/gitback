@@ -43,9 +43,9 @@ export async function getProductDetails(
   args: QueryGetProductArgs,
   context: ContextWithDBModel
 ) {
-  const { productId } = args;
+  const { productSlug } = args;
 
-  let product = await context.db.Product.findById(productId);
+  let product = await context.db.Product.findOne({ slug: productSlug });
 
   if (!product) {
     throw new Error("no such product");

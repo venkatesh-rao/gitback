@@ -61,7 +61,7 @@ const typeDefs: DocumentNode = gql`
 
     listAppRepositories: [Repository!]!
 
-    getProduct(productId: String!): Product!
+    getProduct(productSlug: String!): Product!
     getProductFeedbacks(productId: String!): [Feedback!]!
   }
 
