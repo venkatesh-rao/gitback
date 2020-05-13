@@ -1,25 +1,21 @@
 import React from "react";
 import { IProduct } from "../CreateProduct/types";
-import { GET_PRODUCT_FEEDBACKS_QUERY } from "./query";
-import { useQuery } from "@apollo/client";
-import { GetProductFeedbacksData, GetProductFeedbacksVars } from "./types";
-import Product from ".";
 import {
-  Formik,
-  Form,
-  FormikBag,
-  Field,
-  FieldProps,
-  FormikProps,
-} from "formik";
+  GET_PRODUCT_FEEDBACKS_QUERY,
+  ADD_PRODUCT_FEEDBACK_MUTATION,
+} from "./query";
+import { useQuery, useMutation, useApolloClient } from "@apollo/client";
+import {
+  GetProductFeedbacksData,
+  GetProductFeedbacksVars,
+  AddProductFeedbackVars,
+  AddProductFeedbackData,
+} from "./types";
+import FeedbackForm, { IFormValues } from "./FeedbackForm";
+import { FormikHelpers } from "formik";
 
 interface IFeedbacksProps {
   product: IProduct;
-}
-
-interface IFormValues {
-  title: string;
-  description: string;
 }
 
 const Feedbacks: React.FC<IFeedbacksProps> = ({ product }) => {
@@ -31,6 +27,72 @@ const Feedbacks: React.FC<IFeedbacksProps> = ({ product }) => {
       productId: product.id,
     },
   });
+
+  const client = useApolloClient();
+
+  const [
+    addProductFeedback,
+    { loading: addProductFeedbackLoading },
+  ] = useMutation<AddProductFeedbackData, AddProductFeedbackVars>(
+    ADD_PRODUCT_FEEDBACK_MUTATION,
+    {
+      onCompleted: ({ addProductFeedback }) => {
+        const queryCache = client.readQuery({
+          query: GET_PRODUCT_FEEDBACKS_QUERY,
+          variables: {
+            productId: product.id,
+          },
+        });
+
+        const { getProductFeedbacks } = queryCache;
+
+        const newProductFeedbacks = [
+          ...getProductFeedbacks,
+          addProductFeedback,
+        ];
+
+        client.writeQuery({
+          query: GET_PRODUCT_FEEDBACKS_QUERY,
+          variables: {
+            productId: product.id,
+          },
+          data: {
+            getProductFeedbacks: newProductFeedbacks,
+          },
+        });
+      },
+    }
+  );
+
+  const handleSumbit = React.useCallback(
+    async (values: IFormValues, actions: FormikHelpers<IFormValues>) => {
+      if (addProductFeedbackLoading) {
+        return;
+      }
+
+      try {
+        const response = await addProductFeedback({
+          variables: {
+            productId: product.id,
+            feedback: values,
+          },
+        });
+
+        if (!response || !response.data || !response.data.addProductFeedback) {
+          throw new Error("error creating a product");
+        }
+
+        alert("successfully created a feedback");
+        actions.setSubmitting(false);
+        actions.resetForm();
+      } catch (err) {
+        alert("error creating a product");
+        console.log(err);
+        actions.setSubmitting(false);
+      }
+    },
+    [addProductFeedback, addProductFeedbackLoading]
+  );
 
   if (loading) {
     return <p>Loading</p>;
@@ -46,8 +108,6 @@ const Feedbacks: React.FC<IFeedbacksProps> = ({ product }) => {
     return null;
   }
 
-  const initialValues: IFormValues = { title: "", description: "" };
-
   return (
     <div className="max-w-full mx-auto lg:max-w-xl">
       {data.getProductFeedbacks.map((feedback) => {
@@ -62,63 +122,7 @@ const Feedbacks: React.FC<IFeedbacksProps> = ({ product }) => {
           </div>
         );
       })}
-      <Formik
-        initialValues={initialValues}
-        onSubmit={(values) => alert(JSON.stringify(values, null, 2))}
-      >
-        {(_formProps: FormikProps<IFormValues>) => {
-          return (
-            <Form className="block w-full bg-white shadow-md rounded-md p-4 my-4">
-              <Field name="title">
-                {({ field }: FieldProps) => {
-                  return (
-                    <div className="mb-2">
-                      <label className="text-gray-500 text-xs font-semibold">
-                        Title
-                      </label>
-                      <input
-                        className="block font-semibold text-xl mt-1 text-purple-500 w-full"
-                        placeholder="Feedback title"
-                        {...field}
-                      />
-                    </div>
-                  );
-                }}
-              </Field>
-              <Field name="description">
-                {({ field }: FieldProps) => {
-                  return (
-                    <>
-                      <label className="text-gray-500 text-xs font-semibold">
-                        Description
-                      </label>
-                      <textarea
-                        className="block mt-1 text-md text-gray-800 w-full resize-none"
-                        placeholder="A brief description about your feedback"
-                        {...field}
-                      />
-                    </>
-                  );
-                }}
-              </Field>
-              <div className="flex justify-end">
-                <button
-                  type="reset"
-                  className="duration-200 ease-in-out mt-4 text-gray-600 bg-transparentfont-medium py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                >
-                  Clear
-                </button>
-                <button
-                  type="submit"
-                  className="duration-200 ease-in-out mt-4 bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                >
-                  Post
-                </button>
-              </div>
-            </Form>
-          );
-        }}
-      </Formik>
+      <FeedbackForm onSubmit={handleSumbit} />
     </div>
   );
 };

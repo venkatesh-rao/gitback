@@ -39,3 +39,26 @@ export const GET_PRODUCT_FEEDBACKS_QUERY = gql`
     }
   }
 `;
+
+export const ADD_PRODUCT_FEEDBACK_MUTATION = gql`
+  mutation AddProductFeedback($productId: ID!, $feedback: FeedbackInput!) {
+    addProductFeedback(productId: $productId, feedback: $feedback) {
+      id
+      title
+      description
+      product {
+        id
+        name
+        slug
+        repositoryName
+      }
+      status {
+        slug
+        label
+      }
+      owner {
+        username
+      }
+    }
+  }
+`;

@@ -24,3 +24,17 @@ export interface GetProductFeedbacksVars {
 export interface GetProductFeedbacksData {
   getProductFeedbacks: IFeedback[];
 }
+
+interface FeedbackInput {
+  title: string;
+  description?: string;
+}
+
+export interface AddProductFeedbackVars {
+  productId: string;
+  feedback: FeedbackInput;
+}
+
+export interface AddProductFeedbackData {
+  addProductFeedback: IFeedback;
+}
