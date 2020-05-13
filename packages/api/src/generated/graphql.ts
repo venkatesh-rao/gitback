@@ -68,6 +68,7 @@ export type Query = {
    __typename?: 'Query';
   me: User;
   listAppRepositories: Array<Repository>;
+  products?: Maybe<Array<Product>>;
   getProduct: Product;
   getProductFeedbacks: Array<Feedback>;
 };
@@ -277,6 +278,7 @@ export type StatusResolvers<ContextType = any, ParentType extends ResolversParen
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
   listAppRepositories?: Resolver<Array<ResolversTypes['Repository']>, ParentType, ContextType>,
+  products?: Resolver<Maybe<Array<ResolversTypes['Product']>>, ParentType, ContextType>,
   getProduct?: Resolver<ResolversTypes['Product'], ParentType, ContextType, RequireFields<QueryGetProductArgs, 'productSlug'>>,
   getProductFeedbacks?: Resolver<Array<ResolversTypes['Feedback']>, ParentType, ContextType, RequireFields<QueryGetProductFeedbacksArgs, 'productId'>>,
 }>;

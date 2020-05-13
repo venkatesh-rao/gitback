@@ -67,3 +67,25 @@ export async function getProductDetails(
     developers,
   };
 }
+
+export async function getAllProductsByApp(context: ContextWithDBModel) {
+  const products = await context.db.Product.find({
+    developers: { $in: [context.req.userId] },
+  })
+    .populate("owner")
+    .populate("developers")
+    .lean();
+
+  return products.map((product) => {
+    const { _id: id, name, slug, repositoryName, owner, developers } = product;
+
+    return {
+      id,
+      name,
+      slug,
+      repositoryName,
+      owner,
+      developers,
+    };
+  });
+}

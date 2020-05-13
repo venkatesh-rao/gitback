@@ -8,7 +8,11 @@ import createToken from "../utils/create-token";
 import { authenticate, app } from "../utils/github";
 import { getLoggedInUser, getLoggedInUserFromGithub } from "./user";
 import { getAppRepositories } from "./repositories";
-import { createNewProduct, getProductDetails } from "./product";
+import {
+  createNewProduct,
+  getProductDetails,
+  getAllProductsByApp,
+} from "./product";
 import { addNewFeedback, getProductFeedbacks } from "./feedback";
 
 const Query: QueryResolvers = {
@@ -32,6 +36,13 @@ const Query: QueryResolvers = {
     return getAppRepositories(githubAppAccessToken);
   },
 
+  products: async (_parent, args, context: ContextWithDBModel) => {
+    if (!context.req.installationId || !context.req.userId) {
+      throw new Error("Unauthorized app request");
+    }
+
+    return getAllProductsByApp(context);
+  },
   getProduct: async (_parent, args, context: ContextWithDBModel) => {
     return getProductDetails(args, context);
   },
