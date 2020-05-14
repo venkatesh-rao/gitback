@@ -1,19 +1,25 @@
 import {
+  MutationCreateFeedbackArgs,
+  MutationCreateProductArgs,
+  MutationGithubAppAuthenticateArgs,
+  MutationGithubUserAuthenticateArgs,
   MutationResolvers,
+  QueryFeedbacksArgs,
+  QueryProductArgs,
   QueryResolvers,
   Resolvers,
 } from "../generated/graphql";
 import { ContextWithDBModel } from "../types";
 import createToken from "../utils/create-token";
-import { authenticate, app } from "../utils/github";
-import { getLoggedInUser, getLoggedInUserFromGithub } from "./user";
-import { getAppRepositories } from "./repositories";
+import { app, authenticate } from "../utils/github";
+import { addNewFeedback, getProductFeedbacks } from "./feedback";
 import {
   createNewProduct,
-  getProductDetails,
   getAllProductsByApp,
+  getProductDetails,
 } from "./product";
-import { addNewFeedback, getProductFeedbacks } from "./feedback";
+import { getAppRepositories } from "./repositories";
+import { getLoggedInUser, getLoggedInUserFromGithub } from "./user";
 
 const Query: QueryResolvers = {
   me: (_parent, _args, context: ContextWithDBModel) => {
@@ -24,7 +30,7 @@ const Query: QueryResolvers = {
     return getLoggedInUser(context);
   },
 
-  listAppRepositories: async (_parent, _args, context: ContextWithDBModel) => {
+  repositories: async (_parent, _args, context: ContextWithDBModel) => {
     if (!context.req.installationId) {
       throw new Error("Unauthorized app request");
     }
@@ -36,17 +42,25 @@ const Query: QueryResolvers = {
     return getAppRepositories(githubAppAccessToken);
   },
 
-  products: async (_parent, args, context: ContextWithDBModel) => {
+  products: async (_parent, _args, context: ContextWithDBModel) => {
     if (!context.req.installationId || !context.req.userId) {
       throw new Error("Unauthorized app request");
     }
 
     return getAllProductsByApp(context);
   },
-  getProduct: async (_parent, args, context: ContextWithDBModel) => {
+  product: async (
+    _parent,
+    args: QueryProductArgs,
+    context: ContextWithDBModel
+  ) => {
     return getProductDetails(args, context);
   },
-  getProductFeedbacks: async (_parent, args, context: ContextWithDBModel) => {
+  feedbacks: async (
+    _parent,
+    args: QueryFeedbacksArgs,
+    context: ContextWithDBModel
+  ) => {
     return getProductFeedbacks(args, context);
   },
 };
@@ -54,7 +68,7 @@ const Query: QueryResolvers = {
 const Mutation: MutationResolvers = {
   githubUserAuthenticate: async (
     _parent,
-    args,
+    args: MutationGithubUserAuthenticateArgs,
     context: ContextWithDBModel
   ) => {
     const { code } = args;
@@ -102,7 +116,11 @@ const Mutation: MutationResolvers = {
 
     return token;
   },
-  githubAppAuthenticate: async (_parent, args, context: ContextWithDBModel) => {
+  githubAppAuthenticate: async (
+    _parent,
+    args: MutationGithubAppAuthenticateArgs,
+    context: ContextWithDBModel
+  ) => {
     const { installationId } = args;
 
     const loggedInUser = context.req;
@@ -145,7 +163,11 @@ const Mutation: MutationResolvers = {
     return true;
   },
 
-  createProduct: async (_parent, args, context: ContextWithDBModel) => {
+  createProduct: async (
+    _parent,
+    args: MutationCreateProductArgs,
+    context: ContextWithDBModel
+  ) => {
     if (!context.req.userId || !context.req.installationId) {
       throw new Error("Unauthorized request");
     }
@@ -155,7 +177,11 @@ const Mutation: MutationResolvers = {
     return createdProduct;
   },
 
-  addProductFeedback: async (_parent, args, context: ContextWithDBModel) => {
+  createFeedback: async (
+    _parent,
+    args: MutationCreateFeedbackArgs,
+    context: ContextWithDBModel
+  ) => {
     const createdFeedback = await addNewFeedback(args, context);
 
     return createdFeedback;

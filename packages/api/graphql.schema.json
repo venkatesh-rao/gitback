@@ -399,8 +399,8 @@
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "OBJECT",
-                "name": "Product",
+                "kind": "SCALAR",
+                "name": "ID",
                 "ofType": null
               }
             },
@@ -408,15 +408,15 @@
             "deprecationReason": null
           },
           {
-            "name": "status",
+            "name": "user",
             "description": null,
             "args": [],
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "OBJECT",
-                "name": "Status",
+                "kind": "SCALAR",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -424,13 +424,49 @@
             "deprecationReason": null
           },
           {
-            "name": "owner",
+            "name": "state",
             "description": null,
             "args": [],
             "type": {
-              "kind": "OBJECT",
-              "name": "User",
-              "ofType": null
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "createdAt",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "updatedAt",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Float",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -569,7 +605,7 @@
             "deprecationReason": null
           },
           {
-            "name": "listAppRepositories",
+            "name": "repositories",
             "description": null,
             "args": [],
             "type": {
@@ -613,7 +649,7 @@
             "deprecationReason": null
           },
           {
-            "name": "getProduct",
+            "name": "product",
             "description": null,
             "args": [
               {
@@ -644,7 +680,7 @@
             "deprecationReason": null
           },
           {
-            "name": "getProductFeedbacks",
+            "name": "feedbacks",
             "description": null,
             "args": [
               {
@@ -817,7 +853,7 @@
             "deprecationReason": null
           },
           {
-            "name": "addProductFeedback",
+            "name": "createFeedback",
             "description": null,
             "args": [
               {

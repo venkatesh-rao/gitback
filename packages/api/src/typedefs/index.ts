@@ -37,9 +37,11 @@ const typeDefs: DocumentNode = gql`
     id: ID!
     title: String!
     description: String
-    product: Product!
-    status: Status!
-    owner: User
+    product: ID!
+    user: String!
+    state: String!
+    createdAt: Float!
+    updatedAt: Float!
   }
 
   type Status {
@@ -59,11 +61,11 @@ const typeDefs: DocumentNode = gql`
   type Query {
     me: User!
 
-    listAppRepositories: [Repository!]!
+    repositories: [Repository!]!
 
     products: [Product!]
-    getProduct(productSlug: String!): Product!
-    getProductFeedbacks(productId: String!): [Feedback!]!
+    product(productSlug: String!): Product!
+    feedbacks(productId: String!): [Feedback!]!
   }
 
   # The "Mutation" type is special: it lists all of the available mutations that
@@ -75,7 +77,7 @@ const typeDefs: DocumentNode = gql`
 
     createProduct(productName: String!, repositoryName: String!): Product!
 
-    addProductFeedback(productId: ID!, feedback: FeedbackInput!): Feedback!
+    createFeedback(productId: ID!, feedback: FeedbackInput!): Feedback!
   }
 `;
 
