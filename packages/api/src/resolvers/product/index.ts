@@ -1,10 +1,12 @@
-import { ContextWithDBModel } from "../../types";
+import { request } from "@octokit/request";
+import shortid from "shortid";
+import slugify from "slugify";
 import {
   MutationCreateProductArgs,
-  QueryGetProductArgs,
+  QueryProductArgs,
 } from "../../generated/graphql";
-import slugify from "slugify";
-import shortid from "shortid";
+import { ContextWithDBModel } from "../../types";
+import { app } from "../../utils/github";
 
 export async function createNewProduct(
   args: MutationCreateProductArgs,
@@ -29,6 +31,22 @@ export async function createNewProduct(
 
   const { _id: id, name, slug, repositoryName, owner, developers } = product;
 
+  const appInstallationAccessToken = await app.getInstallationAccessToken({
+    installationId: owner.installationId,
+  });
+
+  const [repoOwner, repoName] = repository.split("/");
+
+  await request("POST /repos/:owner/:repo/labels", {
+    owner: repoOwner,
+    repo: repoName,
+    name: "public",
+    color: "6b46c1",
+    headers: {
+      authorization: `token ${appInstallationAccessToken}`,
+    },
+  });
+
   return {
     id,
     name,
@@ -40,7 +58,7 @@ export async function createNewProduct(
 }
 
 export async function getProductDetails(
-  args: QueryGetProductArgs,
+  args: QueryProductArgs,
   context: ContextWithDBModel
 ) {
   const { productSlug } = args;
