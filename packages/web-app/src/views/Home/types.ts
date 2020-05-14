@@ -1,3 +1,5 @@
+import { IProduct } from "../CreateProduct/types";
+
 export interface IUser {
   name?: string;
   username: string;
@@ -6,6 +8,6 @@ export interface IUser {
   userType: string;
 }
 
-export interface IHomeProps {
-  loggedInUser?: IUser;
+export interface ProductsData {
+  products: IProduct[];
 }
