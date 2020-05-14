@@ -36,8 +36,8 @@ const Product: React.FC<IProductProps> = () => {
   const { getProduct: product } = data;
 
   return (
-    <div className="pb-8">
-      <div className="px-6 py-3 shadow-md bg-white flex items-center justify-between mb-5">
+    <div className="pb-8 bg-purple-100">
+      <div className="p-3 shadow-md bg-white flex items-center justify-between mb-5">
         <Link
           className="text-xl text-purple-500 font-semibold tracking-wide cursor-pointer"
           to={`/${product.slug}`}

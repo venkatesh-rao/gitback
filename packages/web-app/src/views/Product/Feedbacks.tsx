@@ -109,7 +109,7 @@ const Feedbacks: React.FC<IFeedbacksProps> = ({ product }) => {
   }
 
   return (
-    <div className="max-w-full mx-auto lg:max-w-xl">
+    <div className="max-w-full mx-auto md:max-w-lg lg:max-w-xl">
       {data.getProductFeedbacks.map((feedback) => {
         return (
           <div className="group transition duration-200 hover:bg-purple-500 bg-white shadow-md rounded-md p-4 my-4 cursor-pointer">

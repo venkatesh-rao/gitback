@@ -30,7 +30,7 @@ const Layout: React.FC<ILayoutProps & LoggedInUserProps> = (props) => {
   );
 
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <nav className="flex items-center justify-between flex-wrap bg-white p-3 shadow-md">
         <div className="flex items-center flex-grow mr-6">
           <Link
@@ -56,7 +56,9 @@ const Layout: React.FC<ILayoutProps & LoggedInUserProps> = (props) => {
           <Avatar avatarUrl={avatarUrl!} history={history} />
         </div>
       </nav>
-      <main className="p-6">{props.children}</main>
+      <main className="p-6 bg-purple-100 flex-1 flex-grow">
+        {props.children}
+      </main>
     </div>
   );
 };
