@@ -1,8 +1,8 @@
-import Axios from "axios";
-import querystring from "querystring";
 import { App } from "@octokit/app";
+import Axios from "axios";
 import fs from "fs";
 import path from "path";
+import querystring from "querystring";
 
 const {
   APP_CLIENT_ID,

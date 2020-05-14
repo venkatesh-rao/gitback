@@ -1,5 +1,5 @@
-import Axios from "axios";
 import { request } from "@octokit/request";
+import Axios from "axios";
 
 export interface IssueParams {
   owner: string;

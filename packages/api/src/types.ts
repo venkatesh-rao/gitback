@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { IFeedbackModel } from "./database/model/FeedbackModel";
-import { IUserModel } from "./database/model/UserModel";
-import { IUpvoteModel } from "./database/model/UpvoteModel";
-import { IStatusModel } from "./database/model/StatusModel";
 import { IProductModel } from "./database/model/ProductModel";
+import { IStatusModel } from "./database/model/StatusModel";
+import { IUpvoteModel } from "./database/model/UpvoteModel";
+import { IUserModel } from "./database/model/UserModel";
 
 export interface AccessToken {
   userId: string;
