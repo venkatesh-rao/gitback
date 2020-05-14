@@ -1,116 +1,115 @@
-import { ContextWithDBModel } from "../../types";
+import { request } from "@octokit/request";
 import {
-  MutationAddProductFeedbackArgs,
-  QueryGetProductFeedbacksArgs,
+  MutationCreateFeedbackArgs,
+  QueryFeedbacksArgs,
 } from "../../generated/graphql";
-import { createIssue } from "../../utils/http-request";
+import { ContextWithDBModel } from "../../types";
 import { app } from "../../utils/github";
+import { createIssue } from "../../utils/http-request";
 
 export async function addNewFeedback(
-  args: MutationAddProductFeedbackArgs,
+  args: MutationCreateFeedbackArgs,
   context: ContextWithDBModel
 ) {
   const {
     productId,
     feedback: { title, description },
   } = args;
-  const { userId, githubUserAccessToken } = context.req;
 
-  const status = await context.db.Status.findOne({
-    slug: "feedback-open",
-  }).lean();
+  const { githubUserAccessToken } = context.req;
 
-  let newFeedback = await new context.db.Feedback({
-    title,
-    description,
-    product: productId,
-    owner: userId,
-    status: status?._id,
-    issueNumber: 0,
-  }).save();
-
-  newFeedback = await newFeedback
-    .populate("status")
-    .populate({
-      path: "product",
-      populate: {
-        path: "owner",
-      },
-    })
+  const product = await context.db.Product.findById(productId)
     .populate("owner")
-    .execPopulate();
+    .lean();
 
-  const {
-    _id: id,
-    title: newTitle,
-    description: newDescription,
-    owner,
-    product,
-    status: newStatus,
-  } = newFeedback;
+  if (!product) {
+    throw new Error("invalid product");
+  }
+
+  const { owner, repositoryName } = product;
 
   let accessToken = githubUserAccessToken;
 
   if (!accessToken) {
     accessToken = await app.getInstallationAccessToken({
-      installationId: product.owner.installationId,
+      installationId: owner.installationId,
     });
   }
 
-  const [repoOwner, repoName] = product.repositoryName.split("/");
+  const [repoOwner, repoName] = repositoryName.split("/");
 
-  const createdIssue = await createIssue(accessToken, {
+  const issue = await createIssue(accessToken, {
     title,
     body: description || "",
     repo: repoName,
     owner: repoOwner,
   });
 
-  await context.db.Feedback.findByIdAndUpdate(id, {
-    issueNumber: createdIssue.number,
-  });
+  await new context.db.Feedback({
+    product: productId,
+    issueNumber: issue.number,
+  }).save();
 
   return {
-    id,
-    title: newTitle,
-    description: newDescription,
-    product,
-    owner,
-    status: newStatus,
+    id: `${issue.number}`,
+    title: issue.title,
+    description: issue.body,
+    product: productId,
+    user: issue.user.login,
+    state: issue.state,
+    createdAt: new Date(issue.created_at).getTime(),
+    updatedAt: new Date(issue.updated_at).getTime(),
   };
 }
 
 export async function getProductFeedbacks(
-  args: QueryGetProductFeedbacksArgs,
+  args: QueryFeedbacksArgs,
   context: ContextWithDBModel
 ) {
   const { productId } = args;
 
-  const feedbacks = await context.db.Feedback.find({
-    product: productId,
-  })
-    .populate("status")
-    .populate("product")
+  const product = await context.db.Product.findById(productId)
     .populate("owner")
-    .exec();
+    .lean();
 
-  return feedbacks.map((feedback) => {
-    const {
-      _id: id,
-      title: newTitle,
-      description: newDescription,
-      product,
-      owner,
-      status: newStatus,
-    } = feedback;
+  if (!product) {
+    throw new Error("invalid product");
+  }
 
+  const { owner, repositoryName } = product;
+
+  const appInstallationAccessToken = await app.getInstallationAccessToken({
+    installationId: owner.installationId,
+  });
+
+  const [repoOwner, repoName] = repositoryName.split("/");
+
+  const response = await request("GET /repos/:owner/:repo/issues", {
+    owner: repoOwner,
+    repo: repoName,
+    sort: "created",
+    direction: "desc",
+    state: "all",
+    labels: "public",
+    headers: {
+      authorization: `token ${appInstallationAccessToken}`,
+    },
+  });
+
+  const githubIssues = response.data;
+
+  const sanitizedFeedbacks = githubIssues.map((issue) => {
     return {
-      id,
-      title: newTitle,
-      description: newDescription,
-      product,
-      owner,
-      status: newStatus,
+      id: `${issue.number}`,
+      title: issue.title,
+      description: issue.body,
+      product: productId,
+      user: issue.user.login,
+      state: issue.state,
+      createdAt: new Date(issue.created_at).getTime(),
+      updatedAt: new Date(issue.updated_at).getTime(),
     };
   });
+
+  return sanitizedFeedbacks;
 }
