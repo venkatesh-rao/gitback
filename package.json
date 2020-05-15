@@ -4,7 +4,9 @@
   "scripts": {
     "start:dev": "lerna run start:dev",
     "build": "lerna run build",
-    "start": "lerna run start"
+    "start": "lerna run start",
+    "bootstrap": "lerna bootstrap",
+    "clean": "lerna clean"
   },
   "devDependencies": {
     "lerna": "^3.20.2"
