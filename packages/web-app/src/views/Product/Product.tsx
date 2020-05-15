@@ -1,6 +1,6 @@
 import React from "react";
-import { GET_PRODUCT_QUERY } from "./query";
-import { GetProductData, GetProductVars } from "./types";
+import { PRODUCT_QUERY } from "./query";
+import { ProductData, ProductVars } from "./types";
 import { useQuery } from "@apollo/client";
 import Feedbacks from "./Feedbacks";
 import { useParams, Link } from "react-router-dom";
@@ -10,8 +10,8 @@ interface IProductProps {}
 const Product: React.FC<IProductProps> = () => {
   const { productSlug } = useParams();
 
-  const { data, loading, error } = useQuery<GetProductData, GetProductVars>(
-    GET_PRODUCT_QUERY,
+  const { data, loading, error } = useQuery<ProductData, ProductVars>(
+    PRODUCT_QUERY,
     {
       variables: {
         productSlug,
@@ -29,14 +29,14 @@ const Product: React.FC<IProductProps> = () => {
     );
   }
 
-  if (!data || !data.getProduct) {
+  if (!data || !data.product) {
     return null;
   }
 
-  const { getProduct: product } = data;
+  const { product } = data;
 
   return (
-    <div className="pb-8 bg-purple-100">
+    <div className="pb-8 bg-purple-100 min-h-screen">
       <div className="p-3 shadow-md bg-white flex items-center justify-between mb-5">
         <Link
           className="text-xl text-purple-500 font-semibold tracking-wide cursor-pointer"

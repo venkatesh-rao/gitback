@@ -1,28 +1,30 @@
 import { IProduct } from "../CreateProduct/types";
 
 export interface IFeedback {
-  id: any;
+  id: string;
   title: string;
-  description: string | undefined;
-  product: any;
-  owner: any;
-  status: any;
+  description: string;
+  product: string;
+  user: string;
+  state: string;
+  createdAt: number;
+  updatedAt: number;
 }
 
-export interface GetProductData {
-  getProduct: IProduct;
+export interface ProductData {
+  product: IProduct;
 }
 
-export interface GetProductVars {
+export interface ProductVars {
   productSlug: string;
 }
 
-export interface GetProductFeedbacksVars {
+export interface FeedbacksVars {
   productId: string;
 }
 
-export interface GetProductFeedbacksData {
-  getProductFeedbacks: IFeedback[];
+export interface FeedbacksData {
+  feedbacks: IFeedback[];
 }
 
 interface FeedbackInput {
@@ -30,11 +32,11 @@ interface FeedbackInput {
   description?: string;
 }
 
-export interface AddProductFeedbackVars {
+export interface CreateFeedbackVars {
   productId: string;
   feedback: FeedbackInput;
 }
 
-export interface AddProductFeedbackData {
-  addProductFeedback: IFeedback;
+export interface CreateFeedbackData {
+  createFeedback: IFeedback;
 }

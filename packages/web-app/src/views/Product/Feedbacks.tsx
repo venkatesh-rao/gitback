@@ -1,15 +1,12 @@
 import React from "react";
 import { IProduct } from "../CreateProduct/types";
-import {
-  GET_PRODUCT_FEEDBACKS_QUERY,
-  ADD_PRODUCT_FEEDBACK_MUTATION,
-} from "./query";
+import { FEEDBACKS_QUERY, CREATE_FEEDBACK_MUTATION } from "./query";
 import { useQuery, useMutation, useApolloClient } from "@apollo/client";
 import {
-  GetProductFeedbacksData,
-  GetProductFeedbacksVars,
-  AddProductFeedbackVars,
-  AddProductFeedbackData,
+  FeedbacksData,
+  FeedbacksVars,
+  CreateFeedbackVars,
+  CreateFeedbackData,
 } from "./types";
 import FeedbackForm, { IFormValues } from "./FeedbackForm";
 import { FormikHelpers } from "formik";
@@ -19,59 +16,53 @@ interface IFeedbacksProps {
 }
 
 const Feedbacks: React.FC<IFeedbacksProps> = ({ product }) => {
-  const { data, loading, error } = useQuery<
-    GetProductFeedbacksData,
-    GetProductFeedbacksVars
-  >(GET_PRODUCT_FEEDBACKS_QUERY, {
-    variables: {
-      productId: product.id,
-    },
-  });
-
-  const client = useApolloClient();
-
-  const [
-    addProductFeedback,
-    { loading: addProductFeedbackLoading },
-  ] = useMutation<AddProductFeedbackData, AddProductFeedbackVars>(
-    ADD_PRODUCT_FEEDBACK_MUTATION,
+  const { data, loading, error } = useQuery<FeedbacksData, FeedbacksVars>(
+    FEEDBACKS_QUERY,
     {
-      onCompleted: ({ addProductFeedback }) => {
-        const queryCache = client.readQuery({
-          query: GET_PRODUCT_FEEDBACKS_QUERY,
-          variables: {
-            productId: product.id,
-          },
-        });
-
-        const { getProductFeedbacks } = queryCache;
-
-        const newProductFeedbacks = [
-          ...getProductFeedbacks,
-          addProductFeedback,
-        ];
-
-        client.writeQuery({
-          query: GET_PRODUCT_FEEDBACKS_QUERY,
-          variables: {
-            productId: product.id,
-          },
-          data: {
-            getProductFeedbacks: newProductFeedbacks,
-          },
-        });
+      variables: {
+        productId: product.id,
       },
     }
   );
 
+  const client = useApolloClient();
+
+  const [createFeedback, { loading: createFeedbackLoading }] = useMutation<
+    CreateFeedbackData,
+    CreateFeedbackVars
+  >(CREATE_FEEDBACK_MUTATION, {
+    onCompleted: ({ createFeedback }) => {
+      const queryCache = client.readQuery({
+        query: FEEDBACKS_QUERY,
+        variables: {
+          productId: product.id,
+        },
+      });
+
+      const { feedbacks } = queryCache;
+
+      const updatedFeedbacks = [...feedbacks, createFeedback];
+
+      client.writeQuery({
+        query: FEEDBACKS_QUERY,
+        variables: {
+          productId: product.id,
+        },
+        data: {
+          getProductFeedbacks: updatedFeedbacks,
+        },
+      });
+    },
+  });
+
   const handleSumbit = React.useCallback(
     async (values: IFormValues, actions: FormikHelpers<IFormValues>) => {
-      if (addProductFeedbackLoading) {
+      if (createFeedbackLoading) {
         return;
       }
 
       try {
-        const response = await addProductFeedback({
+        const response = await createFeedback({
           variables: {
             productId: product.id,
             feedback: values,
@@ -91,7 +82,7 @@ const Feedbacks: React.FC<IFeedbacksProps> = ({ product }) => {
         actions.setSubmitting(false);
       }
     },
-    [addProductFeedback, addProductFeedbackLoading]
+    [createFeedback, createFeedbackLoading]
   );
 
   if (loading) {
@@ -104,13 +95,13 @@ const Feedbacks: React.FC<IFeedbacksProps> = ({ product }) => {
     );
   }
 
-  if (!data || !data.getProductFeedbacks) {
+  if (!data || !data.feedbacks) {
     return null;
   }
 
   return (
     <div className="max-w-full mx-auto md:max-w-lg lg:max-w-xl">
-      {data.getProductFeedbacks.map((feedback) => {
+      {data.feedbacks.map((feedback) => {
         return (
           <div className="group transition duration-200 hover:bg-purple-500 bg-white shadow-md rounded-md p-4 my-4 cursor-pointer">
             <div className="text-xl mb-1 text-purple-500 group-hover:text-white font-semibold">
