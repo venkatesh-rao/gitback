@@ -12,7 +12,8 @@
 
 ### Apart from the code
 
-- [Create a Github App](https://developer.github.com/apps/building-github-apps/creating-a-github-app/) \* **Generate** a private key for your Github App and **download** the key
+- [Create a Github App](https://developer.github.com/apps/building-github-apps/creating-a-github-app/)
+  - **Generate** a private key for your Github App and **download** the key
 - [Create an Github OAuth App](https://developer.github.com/apps/building-oauth-apps/creating-an-oauth-app/)
 
 ### In the code
