@@ -40,7 +40,7 @@ export function authenticate(code: string, type: string): Promise<string> {
 }
 
 const PRIVATE_KEY = fs.readFileSync(
-  path.join(__dirname, "../../feedbackpro.2020-05-06.private-key.pem"),
+  path.join(__dirname, `../../${process.env.PEM_FILE_NAME_WITH_EXTENSION}`),
   "utf8"
 );
 
