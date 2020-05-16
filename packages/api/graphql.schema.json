@@ -259,7 +259,7 @@
             "deprecationReason": null
           },
           {
-            "name": "slug",
+            "name": "url",
             "description": null,
             "args": [],
             "type": {
@@ -582,7 +582,7 @@
             "description": null,
             "args": [
               {
-                "name": "productSlug",
+                "name": "productUrl",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -742,6 +742,20 @@
             "args": [
               {
                 "name": "productName",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "productUrl",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",

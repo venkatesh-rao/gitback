@@ -35,7 +35,7 @@ export type Product = {
    __typename?: 'Product';
   id: Scalars['ID'];
   name: Scalars['String'];
-  slug: Scalars['String'];
+  url: Scalars['String'];
   repositoryName: Scalars['String'];
   owner: User;
   developers?: Maybe<Array<User>>;
@@ -69,7 +69,7 @@ export type Query = {
 
 
 export type QueryProductArgs = {
-  productSlug: Scalars['String'];
+  productUrl: Scalars['String'];
 };
 
 
@@ -99,6 +99,7 @@ export type MutationGithubAppAuthenticateArgs = {
 
 export type MutationCreateProductArgs = {
   productName: Scalars['String'];
+  productUrl: Scalars['String'];
   repositoryName: Scalars['String'];
 };
 
@@ -242,7 +243,7 @@ export type RepositoryResolvers<ContextType = any, ParentType extends ResolversP
 export type ProductResolvers<ContextType = any, ParentType extends ResolversParentTypes['Product'] = ResolversParentTypes['Product']> = ResolversObject<{
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   repositoryName?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   owner?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
   developers?: Resolver<Maybe<Array<ResolversTypes['User']>>, ParentType, ContextType>,
@@ -265,7 +266,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
   repositories?: Resolver<Array<ResolversTypes['Repository']>, ParentType, ContextType>,
   products?: Resolver<Maybe<Array<ResolversTypes['Product']>>, ParentType, ContextType>,
-  product?: Resolver<ResolversTypes['Product'], ParentType, ContextType, RequireFields<QueryProductArgs, 'productSlug'>>,
+  product?: Resolver<ResolversTypes['Product'], ParentType, ContextType, RequireFields<QueryProductArgs, 'productUrl'>>,
   feedbacks?: Resolver<Array<ResolversTypes['Feedback']>, ParentType, ContextType, RequireFields<QueryFeedbacksArgs, 'productId'>>,
 }>;
 
@@ -273,7 +274,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   githubUserAuthenticate?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationGithubUserAuthenticateArgs, 'code'>>,
   githubAppAuthenticate?: Resolver<ResolversTypes['String'], ParentType, ContextType, RequireFields<MutationGithubAppAuthenticateArgs, 'installationId'>>,
   logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
-  createProduct?: Resolver<ResolversTypes['Product'], ParentType, ContextType, RequireFields<MutationCreateProductArgs, 'productName' | 'repositoryName'>>,
+  createProduct?: Resolver<ResolversTypes['Product'], ParentType, ContextType, RequireFields<MutationCreateProductArgs, 'productName' | 'productUrl' | 'repositoryName'>>,
   createFeedback?: Resolver<ResolversTypes['Feedback'], ParentType, ContextType, RequireFields<MutationCreateFeedbackArgs, 'productId' | 'feedback'>>,
 }>;
 

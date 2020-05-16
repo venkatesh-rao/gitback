@@ -31,7 +31,7 @@ const Home: React.FC<IHomeProps> = (props) => {
       {data.products.map((product) => {
         return (
           <Link
-            to={`/${product.slug}`}
+            to={`/${product.url}`}
             className="bg-white flex flex-col items-center rounded-md shadow-md w-full max-w-xs px-2 duration-200 transform hover:-translate-y-1 mr-0 mb-6 md:mr-6 md:mb-0"
           >
             <div className="text-xl w-full text-center my-2 text-purple-500 font-semibold">

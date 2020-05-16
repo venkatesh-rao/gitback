@@ -5,7 +5,7 @@ export const PRODUCTS_QUERY = gql`
     products {
       id
       name
-      slug
+      url
       repositoryName
       developers {
         username

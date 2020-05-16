@@ -1,11 +1,11 @@
 import { gql } from "@apollo/client";
 
 export const PRODUCT_QUERY = gql`
-  query Product($productSlug: String!) {
-    product(productSlug: $productSlug) {
+  query Product($productUrl: String!) {
+    product(productUrl: $productUrl) {
       id
       name
-      slug
+      url
       repositoryName
       owner {
         avatarUrl

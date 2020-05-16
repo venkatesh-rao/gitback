@@ -18,11 +18,17 @@ interface CreateProductProps {}
 
 interface CreateProductValues {
   productName: string;
+  productUrl: string;
   repositoryName: string;
 }
 
 const CreateProductSchema = Yup.object().shape({
   productName: Yup.string()
+    .min(2, "Too Short!")
+    .max(50, "Too Long!")
+    .required("Required"),
+  productUrl: Yup.string()
+    .lowercase()
     .min(2, "Too Short!")
     .max(50, "Too Long!")
     .required("Required"),
@@ -48,12 +54,13 @@ const CreateProduct: React.FC<CreateProductProps> = (props) => {
         return;
       }
 
-      const { productName, repositoryName } = values;
+      const { productName, productUrl, repositoryName } = values;
 
       try {
         const response = await createProduct({
           variables: {
             productName,
+            productUrl,
             repositoryName,
           },
         });
@@ -87,6 +94,7 @@ const CreateProduct: React.FC<CreateProductProps> = (props) => {
 
   const initialValues: CreateProductValues = {
     productName: "",
+    productUrl: "",
     repositoryName: "",
   };
 
@@ -100,7 +108,7 @@ const CreateProduct: React.FC<CreateProductProps> = (props) => {
         initialValues={initialValues}
         validationSchema={CreateProductSchema}
         onSubmit={handleSubmit}
-        render={(formProps: FormikProps<CreateProductValues>) => {
+        render={(_formProps: FormikProps<CreateProductValues>) => {
           return (
             <Form>
               <div className="w-full mx-auto px-8 pt-6 pb-8 mb-4 bg-white shadow-sm rounded-md">
@@ -126,6 +134,34 @@ const CreateProduct: React.FC<CreateProductProps> = (props) => {
                           type="text"
                           id="productName"
                           placeholder="Product name"
+                          {...field}
+                        />
+                      </div>
+                    );
+                  }}
+                </Field>
+                <Field name="productUrl">
+                  {({ field, meta }: FieldProps) => {
+                    return (
+                      <div className="mb-5">
+                        <div className="flex items-center justify-between mb-1">
+                          <label
+                            className="block text-purple-500 text-xs font-bold uppercase"
+                            htmlFor="productName"
+                          >
+                            Product url*
+                          </label>
+                          {meta.touched && meta.error && (
+                            <span className="block text-xs text-red-500">
+                              {meta.error}
+                            </span>
+                          )}
+                        </div>
+                        <input
+                          className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none"
+                          type="text"
+                          id="productUrl"
+                          placeholder="Product url"
                           {...field}
                         />
                       </div>

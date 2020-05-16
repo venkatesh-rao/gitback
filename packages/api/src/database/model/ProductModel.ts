@@ -8,7 +8,7 @@ const ProductSchema = new Schema(
       type: String,
       required: true,
     },
-    slug: {
+    url: {
       type: String,
       required: true,
       unique: true,
@@ -40,7 +40,7 @@ const ProductSchema = new Schema(
 // DO NOT export this
 interface IProductSchema extends Document {
   name: string;
-  slug: string;
+  url: string;
   repositoryName: string;
 }
 

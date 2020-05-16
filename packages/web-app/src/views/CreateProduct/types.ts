@@ -6,5 +6,6 @@ export interface CreateProductData {
 
 export interface CreateProductVars {
   productName: string;
+  productUrl: string;
   repositoryName: string;
 }

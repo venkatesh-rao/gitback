@@ -8,13 +8,13 @@ import { useParams, Link } from "react-router-dom";
 interface IProductProps {}
 
 const Product: React.FC<IProductProps> = () => {
-  const { productSlug } = useParams();
+  const { productUrl } = useParams();
 
   const { data, loading, error } = useQuery<ProductData, ProductVars>(
     PRODUCT_QUERY,
     {
       variables: {
-        productSlug,
+        productUrl,
       },
     }
   );
@@ -40,7 +40,7 @@ const Product: React.FC<IProductProps> = () => {
       <div className="p-3 shadow-md bg-white flex items-center justify-between mb-5">
         <Link
           className="text-xl text-purple-500 font-semibold tracking-wide cursor-pointer"
-          to={`/${product.slug}`}
+          to={`/${product.url}`}
         >
           {product.name}
         </Link>

@@ -28,7 +28,7 @@ function App() {
           <ProtectedRoute exact path="/create-product">
             <CreateProduct />
           </ProtectedRoute>
-          <Route exact path="/:productSlug">
+          <Route exact path="/:productUrl">
             <Product />
           </Route>
           <ProtectedRoute exact path="/">

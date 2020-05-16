@@ -1,6 +1,4 @@
 import { request } from "@octokit/request";
-import shortid from "shortid";
-import slugify from "slugify";
 import {
   MutationCreateProductArgs,
   QueryProductArgs,
@@ -12,13 +10,11 @@ export async function createNewProduct(
   args: MutationCreateProductArgs,
   context: ContextWithDBModel
 ) {
-  const { productName, repositoryName: repository } = args;
-
-  const newSlug = slugify(`${productName}-${shortid.generate()}`);
+  const { productName, productUrl, repositoryName: repository } = args;
 
   let product = await new context.db.Product({
     name: productName,
-    slug: newSlug,
+    url: productUrl,
     repositoryName: repository,
     owner: context.req.userId,
     developers: [context.req.userId],
@@ -29,7 +25,7 @@ export async function createNewProduct(
     .populate("developers")
     .execPopulate();
 
-  const { _id: id, name, slug, repositoryName, owner, developers } = product;
+  const { _id: id, name, url, repositoryName, owner, developers } = product;
 
   const appInstallationAccessToken = await app.getInstallationAccessToken({
     installationId: owner.installationId,
@@ -50,7 +46,7 @@ export async function createNewProduct(
   return {
     id,
     name,
-    slug,
+    url,
     repositoryName,
     owner,
     developers,
@@ -61,9 +57,9 @@ export async function getProductDetails(
   args: QueryProductArgs,
   context: ContextWithDBModel
 ) {
-  const { productSlug } = args;
+  const { productUrl } = args;
 
-  let product = await context.db.Product.findOne({ slug: productSlug });
+  let product = await context.db.Product.findOne({ url: productUrl });
 
   if (!product) {
     throw new Error("no such product");
@@ -74,12 +70,12 @@ export async function getProductDetails(
     .populate("developers")
     .execPopulate();
 
-  const { _id: id, name, slug, repositoryName, owner, developers } = product;
+  const { _id: id, name, url, repositoryName, owner, developers } = product;
 
   return {
     id,
     name,
-    slug,
+    url,
     repositoryName,
     owner,
     developers,
@@ -95,12 +91,12 @@ export async function getAllProductsByApp(context: ContextWithDBModel) {
     .lean();
 
   return products.map((product) => {
-    const { _id: id, name, slug, repositoryName, owner, developers } = product;
+    const { _id: id, name, url, repositoryName, owner, developers } = product;
 
     return {
       id,
       name,
-      slug,
+      url,
       repositoryName,
       owner,
       developers,

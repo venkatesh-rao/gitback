@@ -27,7 +27,7 @@ const typeDefs: DocumentNode = gql`
   type Product {
     id: ID!
     name: String!
-    slug: String!
+    url: String!
     repositoryName: String!
     owner: User!
     developers: [User!]
@@ -57,7 +57,7 @@ const typeDefs: DocumentNode = gql`
     repositories: [Repository!]!
 
     products: [Product!]
-    product(productSlug: String!): Product!
+    product(productUrl: String!): Product!
     feedbacks(productId: String!): [Feedback!]!
   }
 
@@ -68,7 +68,11 @@ const typeDefs: DocumentNode = gql`
     githubAppAuthenticate(installationId: Float!): String!
     logout: Boolean!
 
-    createProduct(productName: String!, repositoryName: String!): Product!
+    createProduct(
+      productName: String!
+      productUrl: String!
+      repositoryName: String!
+    ): Product!
 
     createFeedback(productId: ID!, feedback: FeedbackInput!): Feedback!
   }
