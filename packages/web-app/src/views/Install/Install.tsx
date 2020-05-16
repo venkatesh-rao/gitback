@@ -44,7 +44,7 @@ const Install: React.FC<any> = () => {
   }, [loginAsApp, installationId]);
 
   if (isSuccess) {
-    return <Redirect to="/repos" />;
+    return <Redirect to="/create-product" />;
   }
 
   if (githubAppAuthenticateLoading) {
