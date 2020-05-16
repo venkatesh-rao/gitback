@@ -19,26 +19,29 @@ const Install: React.FC<any> = () => {
     GITHUB_APP_AUTHENTICATE_QUERY
   );
 
-  async function loginAsApp(installationId: number) {
-    try {
-      const response = await githubAppAuthenticate({
-        variables: {
-          installationId,
-        },
-      });
+  const loginAsApp = React.useCallback(
+    async (installationId: number) => {
+      try {
+        const response = await githubAppAuthenticate({
+          variables: {
+            installationId,
+          },
+        });
 
-      if (response && response.data && response.data.githubAppAuthenticate) {
-        setSuccess(true);
-      }
-    } catch (error) {}
-  }
+        if (response && response.data && response.data.githubAppAuthenticate) {
+          setSuccess(true);
+        }
+      } catch (error) {}
+    },
+    [githubAppAuthenticate]
+  );
 
   React.useEffect(() => {
     if (installationId) {
       loginAsApp(Number(installationId));
       return;
     }
-  }, []);
+  }, [loginAsApp, installationId]);
 
   if (isSuccess) {
     return <Redirect to="/repos" />;

@@ -50,26 +50,29 @@ function Login() {
     GITHUB_USER_AUTHENTICATE_QUERY
   );
 
-  async function loginAsUser(code: string) {
-    try {
-      const response = await githubUserAuthenticate({
-        variables: {
-          code,
-        },
-      });
+  const loginAsUser = React.useCallback(
+    async (code: string) => {
+      try {
+        const response = await githubUserAuthenticate({
+          variables: {
+            code,
+          },
+        });
 
-      if (response && response.data && response.data.githubUserAuthenticate) {
-        setSuccess(true);
-      }
-    } catch (error) {}
-  }
+        if (response && response.data && response.data.githubUserAuthenticate) {
+          setSuccess(true);
+        }
+      } catch (error) {}
+    },
+    [githubUserAuthenticate]
+  );
 
   React.useEffect(() => {
     if (code) {
       loginAsUser(code);
       return;
     }
-  }, []);
+  }, [loginAsUser, code]);
 
   if (isSuccess) {
     return <Redirect to="/" />;

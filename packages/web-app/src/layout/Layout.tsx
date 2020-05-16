@@ -90,7 +90,7 @@ function useOutsideAlerter(
       // Unbind the event listener on clean up
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [ref]);
+  }, [ref, callback]);
 }
 
 interface IAvatarProps {
@@ -123,16 +123,20 @@ const Avatar: React.FC<IAvatarProps> = (props: IAvatarProps) => {
 
   const handleLogout = React.useCallback(async () => {
     if (logoutLoading) return;
+
     try {
       await logout();
     } catch (err) {}
+
     toggleMenu();
+
     history.push("/");
-  }, [logout, logoutLoading]);
+  }, [logout, logoutLoading, toggleMenu, history]);
 
   return (
     <div className="ml-3 relative" ref={wrapperRef}>
       <img
+        alt="Github user"
         role="button"
         className="w-6 h-6 shadow-xs rounded-full"
         src={avatarUrl}
