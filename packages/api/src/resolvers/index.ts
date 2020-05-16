@@ -43,8 +43,12 @@ const Query: QueryResolvers = {
   },
 
   products: async (_parent, _args, context: ContextWithDBModel) => {
-    if (!context.req.installationId || !context.req.userId) {
-      throw new Error("Unauthorized app request");
+    if (!context.req.userId) {
+      throw new Error("Unauthorized user");
+    }
+
+    if (!context.req.installationId) {
+      return [];
     }
 
     return getAllProductsByApp(context);
