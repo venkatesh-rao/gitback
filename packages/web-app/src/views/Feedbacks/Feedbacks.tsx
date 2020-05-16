@@ -101,6 +101,11 @@ const Feedbacks: React.FC<IFeedbacksProps> = ({ product }) => {
 
   return (
     <div className="max-w-full mx-auto md:max-w-lg lg:max-w-xl">
+      {data.feedbacks.length < 1 ? (
+        <p className="text-gray-700 text-xl py-16 text-center">
+          Be the first to give a feedback
+        </p>
+      ) : null}
       {data.feedbacks.map((feedback) => {
         return (
           <div className="group transition duration-200 hover:bg-purple-500 bg-white shadow-md rounded-md p-4 my-4 cursor-pointer">
