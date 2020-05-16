@@ -7,6 +7,6 @@ export interface Repository {
   description?: string | null | undefined;
 }
 
-export interface ListAppRepositoriesData {
-  listAppRepositories: Repository[];
+export interface RepositoriesData {
+  repositories: Repository[];
 }

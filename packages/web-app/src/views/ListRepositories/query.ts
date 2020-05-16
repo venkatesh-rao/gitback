@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
-export const LIST_REPOSITORIES_QUERY = gql`
-  query ListAppRepositories {
-    listAppRepositories {
+export const REPOSITORIES_QUERY = gql`
+  query Repositories {
+    repositories {
       id
       nodeId
       name

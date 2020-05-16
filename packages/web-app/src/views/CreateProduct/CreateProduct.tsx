@@ -8,8 +8,8 @@ import {
   FieldProps,
 } from "formik";
 import * as Yup from "yup";
-import { ListAppRepositoriesData } from "../ListRepositories/types";
-import { LIST_REPOSITORIES_QUERY } from "../ListRepositories/query";
+import { RepositoriesData } from "../ListRepositories/types";
+import { REPOSITORIES_QUERY } from "../ListRepositories/query";
 import { useQuery, useMutation } from "@apollo/client";
 import { CREATE_PRODUCT_MUTATION } from "./query";
 import { CreateProductData, CreateProductVars } from "./types";
@@ -28,16 +28,16 @@ const CreateProductSchema = Yup.object().shape({
     .max(50, "Too Long!")
     .required("Required"),
   productUrl: Yup.string()
-    .lowercase()
+    .required("Required")
+    .matches(/^[a-z0-9]+(?:[_-][a-z0-9]+)*$/, "Invalid url")
     .min(2, "Too Short!")
-    .max(50, "Too Long!")
-    .required("Required"),
+    .max(50, "Too Long!"),
   repositoryName: Yup.string().required("Required"),
 });
 
 const CreateProduct: React.FC<CreateProductProps> = (props) => {
-  const { data, loading, error } = useQuery<ListAppRepositoriesData>(
-    LIST_REPOSITORIES_QUERY
+  const { data, loading, error } = useQuery<RepositoriesData>(
+    REPOSITORIES_QUERY
   );
 
   const [createProduct, { loading: createProductLoading }] = useMutation<
@@ -68,12 +68,12 @@ const CreateProduct: React.FC<CreateProductProps> = (props) => {
         if (response && response.data && response.data.createProduct) {
           alert("successfully created a product");
         }
+
+        actions.resetForm();
       } catch (err) {
         alert("error creating a product");
         console.log(err);
       }
-      actions.setSubmitting(false);
-      actions.resetForm();
     },
     [createProduct, createProductLoading]
   );
@@ -88,7 +88,7 @@ const CreateProduct: React.FC<CreateProductProps> = (props) => {
     );
   }
 
-  if (!data || !data.listAppRepositories) {
+  if (!data || !data.repositories) {
     return null;
   }
 
@@ -118,7 +118,7 @@ const CreateProduct: React.FC<CreateProductProps> = (props) => {
                       <div className="mb-5">
                         <div className="flex items-center justify-between mb-1">
                           <label
-                            className="block text-purple-500 text-xs font-bold uppercase"
+                            className="block text-purple-700 text-xs font-bold"
                             htmlFor="productName"
                           >
                             Product name*
@@ -146,7 +146,7 @@ const CreateProduct: React.FC<CreateProductProps> = (props) => {
                       <div className="mb-5">
                         <div className="flex items-center justify-between mb-1">
                           <label
-                            className="block text-purple-500 text-xs font-bold uppercase"
+                            className="block text-purple-700 text-xs font-bold"
                             htmlFor="productName"
                           >
                             Product url*
@@ -164,6 +164,9 @@ const CreateProduct: React.FC<CreateProductProps> = (props) => {
                           placeholder="Product url"
                           {...field}
                         />
+                        <p className="text-gray-600 text-xs italic">
+                          Make it lowercase with no special characters
+                        </p>
                       </div>
                     );
                   }}
@@ -174,7 +177,7 @@ const CreateProduct: React.FC<CreateProductProps> = (props) => {
                       <div className="mb-5">
                         <div className="flex items-center justify-between mb-1">
                           <label
-                            className="block text-gray-700 text-xs font-bold uppercase"
+                            className="block text-purple-700 text-xs font-bold"
                             htmlFor="repositoryName"
                           >
                             Repository*
@@ -192,7 +195,7 @@ const CreateProduct: React.FC<CreateProductProps> = (props) => {
                             {...field}
                           >
                             <option value="">Select a repository</option>
-                            {data.listAppRepositories.map((repo) => {
+                            {data.repositories.map((repo) => {
                               return (
                                 <option key={repo.id} value={repo.fullName}>
                                   {repo.name}
