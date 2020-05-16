@@ -4,6 +4,7 @@ import { PRODUCTS_QUERY } from "./query";
 import { useQuery } from "@apollo/client";
 import { Link } from "react-router-dom";
 import { GoRepo } from "react-icons/go";
+import Error from "../../components/Error/Error";
 
 export interface IHomeProps {
   loggedInUser?: IUser;
@@ -17,9 +18,7 @@ const Home: React.FC<IHomeProps> = (props) => {
   }
 
   if (error) {
-    return (
-      <p style={{ whiteSpace: "pre-wrap" }}>{JSON.stringify(error, null, 2)}</p>
-    );
+    return <Error errorType="bug" />;
   }
 
   if (!data || !data.products) {

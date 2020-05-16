@@ -4,6 +4,7 @@ import { ProductData, ProductVars } from "./types";
 import { useQuery } from "@apollo/client";
 import Feedbacks from "../Feedbacks";
 import { useParams, Link } from "react-router-dom";
+import Error from "../../components/Error/Error";
 
 interface IProductProps {}
 
@@ -24,9 +25,7 @@ const Product: React.FC<IProductProps> = () => {
   }
 
   if (error) {
-    return (
-      <p style={{ whiteSpace: "pre-wrap" }}>{JSON.stringify(error, null, 2)}</p>
-    );
+    return <Error errorType="404" />;
   }
 
   if (!data || !data.product) {
