@@ -1,7 +1,7 @@
 export interface IFeedback {
   id: string;
   title: string;
-  description: string;
+  description?: string;
   product: string;
   user: string;
   state: string;

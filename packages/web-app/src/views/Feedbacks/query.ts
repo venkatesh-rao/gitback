@@ -21,19 +21,11 @@ export const CREATE_FEEDBACK_MUTATION = gql`
       id
       title
       description
-      product {
-        id
-        name
-        slug
-        repositoryName
-      }
-      status {
-        slug
-        label
-      }
-      owner {
-        username
-      }
+      product
+      user
+      state
+      createdAt
+      updatedAt
     }
   }
 `;
