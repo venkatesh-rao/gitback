@@ -69,7 +69,7 @@ const Feedbacks: React.FC<IFeedbacksProps> = ({ product }) => {
           },
         });
 
-        if (!response || !response.data || !response.data.addProductFeedback) {
+        if (!response || !response.data || !response.data.createFeedback) {
           throw new Error("error creating a product");
         }
 
