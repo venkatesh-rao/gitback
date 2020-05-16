@@ -44,13 +44,6 @@ const typeDefs: DocumentNode = gql`
     updatedAt: Float!
   }
 
-  type Status {
-    id: ID!
-    slug: String!
-    label: String!
-    description: String
-  }
-
   input FeedbackInput {
     title: String!
     description: String

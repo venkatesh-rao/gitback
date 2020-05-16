@@ -53,14 +53,6 @@ export type Feedback = {
   updatedAt: Scalars['Float'];
 };
 
-export type Status = {
-   __typename?: 'Status';
-  id: Scalars['ID'];
-  slug: Scalars['String'];
-  label: Scalars['String'];
-  description?: Maybe<Scalars['String']>;
-};
-
 export type FeedbackInput = {
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
@@ -204,7 +196,6 @@ export type ResolversTypes = ResolversObject<{
   Product: ResolverTypeWrapper<Product>,
   ID: ResolverTypeWrapper<Scalars['ID']>,
   Feedback: ResolverTypeWrapper<Feedback>,
-  Status: ResolverTypeWrapper<Status>,
   FeedbackInput: FeedbackInput,
   Query: ResolverTypeWrapper<{}>,
   Mutation: ResolverTypeWrapper<{}>,
@@ -222,7 +213,6 @@ export type ResolversParentTypes = ResolversObject<{
   Product: Product,
   ID: Scalars['ID'],
   Feedback: Feedback,
-  Status: Status,
   FeedbackInput: FeedbackInput,
   Query: {},
   Mutation: {},
@@ -271,14 +261,6 @@ export type FeedbackResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;
 
-export type StatusResolvers<ContextType = any, ParentType extends ResolversParentTypes['Status'] = ResolversParentTypes['Status']> = ResolversObject<{
-  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
-  slug?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  label?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  __isTypeOf?: isTypeOfResolverFn<ParentType>,
-}>;
-
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
   repositories?: Resolver<Array<ResolversTypes['Repository']>, ParentType, ContextType>,
@@ -304,7 +286,6 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   Repository?: RepositoryResolvers<ContextType>,
   Product?: ProductResolvers<ContextType>,
   Feedback?: FeedbackResolvers<ContextType>,
-  Status?: StatusResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   Upload?: GraphQLScalarType,

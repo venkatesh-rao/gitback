@@ -1,7 +1,5 @@
 import { Document, Model, model, Schema } from "mongoose";
-import { IUser } from "./UserModel";
 import { IProduct } from "./ProductModel";
-import { IStatus } from "./StatusModel";
 
 // Schema
 const FeedbackSchema = new Schema(

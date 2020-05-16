@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { IFeedbackModel } from "./database/model/FeedbackModel";
 import { IProductModel } from "./database/model/ProductModel";
-import { IStatusModel } from "./database/model/StatusModel";
 import { IUpvoteModel } from "./database/model/UpvoteModel";
 import { IUserModel } from "./database/model/UserModel";
 
@@ -16,7 +15,6 @@ interface DB {
   Feedback: IFeedbackModel;
   User: IUserModel;
   Product: IProductModel;
-  Status: IStatusModel;
   Upvote: IUpvoteModel;
 }
 
