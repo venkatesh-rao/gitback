@@ -2,7 +2,7 @@ import React from "react";
 import { PRODUCT_QUERY } from "./query";
 import { ProductData, ProductVars } from "./types";
 import { useQuery } from "@apollo/client";
-import Feedbacks from "./Feedbacks";
+import Feedbacks from "../Feedbacks";
 import { useParams, Link } from "react-router-dom";
 
 interface IProductProps {}

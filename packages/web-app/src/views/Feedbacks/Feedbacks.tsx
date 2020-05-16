@@ -1,5 +1,5 @@
 import React from "react";
-import { IProduct } from "../CreateProduct/types";
+import { IProduct } from "../Product/types";
 import { FEEDBACKS_QUERY, CREATE_FEEDBACK_MUTATION } from "./query";
 import { useQuery, useMutation, useApolloClient } from "@apollo/client";
 import {
@@ -82,7 +82,7 @@ const Feedbacks: React.FC<IFeedbacksProps> = ({ product }) => {
         actions.setSubmitting(false);
       }
     },
-    [createFeedback, createFeedbackLoading]
+    [product.id, createFeedback, createFeedbackLoading]
   );
 
   if (loading) {

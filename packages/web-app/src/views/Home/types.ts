@@ -1,4 +1,4 @@
-import { IProduct } from "../CreateProduct/types";
+import { IProduct } from "../Product/types";
 
 export interface IUser {
   name?: string;
