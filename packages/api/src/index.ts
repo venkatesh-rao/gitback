@@ -1,5 +1,6 @@
 require("dotenv").config();
-import { ApolloServer } from "apollo-server-express";
+import { ApolloServer, ApolloError } from "apollo-server-express";
+import { v4 } from "uuid";
 import cookieParser from "cookie-parser";
 import cors, { CorsOptions } from "cors";
 import express from "express";
@@ -10,6 +11,7 @@ import resolvers from "./resolvers";
 import typeDefs from "./typedefs";
 import { AccessToken, ContextWithDBModel } from "./types";
 import createToken from "./utils/create-token";
+import { GraphQLError } from "graphql";
 
 const app = express();
 
@@ -106,6 +108,17 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: ({ req, res }) => ({ req, res, db } as ContextWithDBModel),
+  formatError: (error: GraphQLError) => {
+    if (error.originalError instanceof ApolloError) {
+      return error;
+    }
+
+    const errId = v4();
+    console.log("errId: ", errId);
+    console.log(error);
+
+    return new GraphQLError(`Internal Error: ${errId}`);
+  },
 });
 
 server.applyMiddleware({ app, path: "/", cors: false });
