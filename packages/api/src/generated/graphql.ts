@@ -53,6 +53,15 @@ export type Feedback = {
   updatedAt: Scalars['Float'];
 };
 
+export type Comment = {
+   __typename?: 'Comment';
+  id: Scalars['Int'];
+  body: Scalars['String'];
+  user: Scalars['String'];
+  createdAt: Scalars['Float'];
+  updatedAt: Scalars['Float'];
+};
+
 export type FeedbackInput = {
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
@@ -65,6 +74,7 @@ export type Query = {
   products?: Maybe<Array<Product>>;
   product: Product;
   feedbacks: Array<Feedback>;
+  comments: Array<Comment>;
 };
 
 
@@ -75,6 +85,12 @@ export type QueryProductArgs = {
 
 export type QueryFeedbacksArgs = {
   productId: Scalars['String'];
+};
+
+
+export type QueryCommentsArgs = {
+  productId: Scalars['String'];
+  issueNumber: Scalars['Float'];
 };
 
 export type Mutation = {
@@ -197,6 +213,8 @@ export type ResolversTypes = ResolversObject<{
   Product: ResolverTypeWrapper<Product>,
   ID: ResolverTypeWrapper<Scalars['ID']>,
   Feedback: ResolverTypeWrapper<Feedback>,
+  Comment: ResolverTypeWrapper<Comment>,
+  Int: ResolverTypeWrapper<Scalars['Int']>,
   FeedbackInput: FeedbackInput,
   Query: ResolverTypeWrapper<{}>,
   Mutation: ResolverTypeWrapper<{}>,
@@ -214,6 +232,8 @@ export type ResolversParentTypes = ResolversObject<{
   Product: Product,
   ID: Scalars['ID'],
   Feedback: Feedback,
+  Comment: Comment,
+  Int: Scalars['Int'],
   FeedbackInput: FeedbackInput,
   Query: {},
   Mutation: {},
@@ -262,12 +282,22 @@ export type FeedbackResolvers<ContextType = any, ParentType extends ResolversPar
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;
 
+export type CommentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
+  body?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  user?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  createdAt?: Resolver<ResolversTypes['Float'], ParentType, ContextType>,
+  updatedAt?: Resolver<ResolversTypes['Float'], ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   me?: Resolver<ResolversTypes['User'], ParentType, ContextType>,
   repositories?: Resolver<Array<ResolversTypes['Repository']>, ParentType, ContextType>,
   products?: Resolver<Maybe<Array<ResolversTypes['Product']>>, ParentType, ContextType>,
   product?: Resolver<ResolversTypes['Product'], ParentType, ContextType, RequireFields<QueryProductArgs, 'productUrl'>>,
   feedbacks?: Resolver<Array<ResolversTypes['Feedback']>, ParentType, ContextType, RequireFields<QueryFeedbacksArgs, 'productId'>>,
+  comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<QueryCommentsArgs, 'productId' | 'issueNumber'>>,
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
@@ -287,6 +317,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   Repository?: RepositoryResolvers<ContextType>,
   Product?: ProductResolvers<ContextType>,
   Feedback?: FeedbackResolvers<ContextType>,
+  Comment?: CommentResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   Upload?: GraphQLScalarType,

@@ -4,6 +4,7 @@ import {
   MutationGithubAppAuthenticateArgs,
   MutationGithubUserAuthenticateArgs,
   MutationResolvers,
+  QueryCommentsArgs,
   QueryFeedbacksArgs,
   QueryProductArgs,
   QueryResolvers,
@@ -20,6 +21,7 @@ import {
 } from "./product";
 import { getAppRepositories } from "./repositories";
 import { getLoggedInUser, getLoggedInUserFromGithub } from "./user";
+import { getComments } from "./comments";
 
 const Query: QueryResolvers = {
   me: (_parent, _args, context: ContextWithDBModel) => {
@@ -66,6 +68,14 @@ const Query: QueryResolvers = {
     context: ContextWithDBModel
   ) => {
     return getProductFeedbacks(args, context);
+  },
+
+  comments: async (
+    _parent,
+    args: QueryCommentsArgs,
+    context: ContextWithDBModel
+  ) => {
+    return getComments(args, context);
   },
 };
 

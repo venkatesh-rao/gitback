@@ -44,6 +44,14 @@ const typeDefs: DocumentNode = gql`
     updatedAt: Float!
   }
 
+  type Comment {
+    id: Int!
+    body: String!
+    user: String!
+    createdAt: Float!
+    updatedAt: Float!
+  }
+
   input FeedbackInput {
     title: String!
     description: String
@@ -59,6 +67,8 @@ const typeDefs: DocumentNode = gql`
     products: [Product!]
     product(productUrl: String!): Product!
     feedbacks(productId: String!): [Feedback!]!
+
+    comments(productId: String!, issueNumber: Float!): [Comment!]!
   }
 
   # The "Mutation" type is special: it lists all of the available mutations that
