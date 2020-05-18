@@ -31,7 +31,7 @@ const Layout: React.FC<ILayoutProps & LoggedInUserProps> = (props) => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <nav className="flex items-center justify-between flex-wrap bg-white p-3 shadow-md">
+      <nav className="flex items-center justify-between flex-wrap bg-white p-3 shadow-md z-10">
         <div className="flex items-center flex-grow mr-6">
           <Link
             to="/"
