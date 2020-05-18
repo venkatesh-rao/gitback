@@ -38,6 +38,7 @@ export async function createNewProduct(
     repo: repoName,
     name: "public",
     color: "6b46c1",
+    description: "This issue has been created by or visible to your app users",
     headers: {
       authorization: `token ${appInstallationAccessToken}`,
     },
