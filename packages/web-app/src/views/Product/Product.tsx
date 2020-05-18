@@ -35,16 +35,20 @@ const Product: React.FC<IProductProps> = () => {
   const { product } = data;
 
   return (
-    <div className="pb-8 bg-purple-100 min-h-screen">
-      <div className="p-3 shadow-md bg-white flex items-center justify-between mb-5">
-        <Link
-          className="text-xl text-purple-500 font-semibold tracking-wide cursor-pointer"
-          to={`/${product.url}`}
-        >
-          {product.name}
-        </Link>
-      </div>
-      <Feedbacks product={product} />
+    <div className="flex flex-col min-h-screen">
+      <nav className="h-12 fixed top-0 left-0 right-0 flex items-center justify-between flex-wrap bg-white px-3 shadow-md z-10">
+        <div className="flex items-center flex-grow mr-6">
+          <Link
+            className="text-purple-700 font-semibold text-xl tracking-wide"
+            to={`/${product.url}`}
+          >
+            {product.name}
+          </Link>
+        </div>
+      </nav>
+      <main className="pt-16 pb-3 px-6 bg-purple-100 flex-1 flex-grow">
+        <Feedbacks product={product} />
+      </main>
     </div>
   );
 };
