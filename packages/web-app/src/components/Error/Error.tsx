@@ -21,6 +21,7 @@ const Error: React.FC<IErrorProps> = (props) => {
       <img
         className="max-w-xs md:max-w-sm lg:max-w-md xl:max-w-lg mx-auto"
         src={errorImage[props.errorType]}
+        alt="Sorry for the inconvenience"
       />
       <p className="my-8 text-2xl text-purple-700">
         Sorry for the inconvenience
