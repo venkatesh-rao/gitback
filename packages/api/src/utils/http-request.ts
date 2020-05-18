@@ -6,6 +6,7 @@ export interface IssueParams {
   repo: string;
   title: string;
   body: string;
+  labels: string[];
 }
 
 export async function get(reqPath: string, accessToken: string) {

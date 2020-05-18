@@ -43,6 +43,7 @@ export async function addNewFeedback(
     body: description || "",
     repo: repoName,
     owner: repoOwner,
+    labels: ["public"],
   });
 
   await new context.db.Feedback({
