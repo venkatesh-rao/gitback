@@ -7,15 +7,22 @@ import {
   FeedbacksVars,
   CreateFeedbackVars,
   CreateFeedbackData,
+  IFeedback,
 } from "./types";
 import FeedbackForm, { IFormValues } from "./FeedbackForm";
 import { FormikHelpers } from "formik";
+import Comments from "../Comments";
 
 interface IFeedbacksProps {
   product: IProduct;
 }
 
 const Feedbacks: React.FC<IFeedbacksProps> = ({ product }) => {
+  const [
+    selectedFeedback,
+    setSelectedFeedback,
+  ] = React.useState<IFeedback | null>(null);
+
   const { data, loading, error } = useQuery<FeedbacksData, FeedbacksVars>(
     FEEDBACKS_QUERY,
     {
@@ -49,7 +56,7 @@ const Feedbacks: React.FC<IFeedbacksProps> = ({ product }) => {
           productId: product.id,
         },
         data: {
-          getProductFeedbacks: updatedFeedbacks,
+          feedbacks: updatedFeedbacks,
         },
       });
     },
@@ -99,26 +106,59 @@ const Feedbacks: React.FC<IFeedbacksProps> = ({ product }) => {
     return null;
   }
 
+  if (!selectedFeedback && data.feedbacks.length > 0) {
+    setSelectedFeedback(data.feedbacks[0]);
+  }
+
   return (
-    <div className="max-w-full mx-auto md:max-w-lg lg:max-w-xl">
-      {data.feedbacks.length < 1 ? (
-        <p className="text-gray-700 text-xl py-16 text-center">
-          Be the first to give a feedback
-        </p>
-      ) : null}
-      {data.feedbacks.map((feedback) => {
-        return (
-          <div className="group transition duration-200 hover:bg-purple-500 bg-white shadow-md rounded-md p-4 my-4 cursor-pointer">
-            <div className="text-xl mb-1 text-purple-500 group-hover:text-white font-semibold">
-              {feedback.title}
+    <div className="w-full">
+      <div
+        className={`w-full md:w-2/3 pr-6 ${
+          selectedFeedback ? "m-0" : " mx-auto"
+        }`}
+      >
+        {data.feedbacks.length < 1 ? (
+          <p className="text-gray-700 text-xl py-16 text-center">
+            Be the first to give a feedback
+          </p>
+        ) : null}
+        {data.feedbacks.map((feedback) => {
+          const isActive =
+            selectedFeedback && selectedFeedback.id === feedback.id;
+          return (
+            <div
+              key={feedback.id}
+              className={`group transition duration-200 hover:bg-purple-500 ${
+                isActive ? "bg-purple-500" : "bg-white"
+              } shadow-md rounded-md p-4 my-4 cursor-pointer`}
+            >
+              <div
+                className={`text-xl mb-1 ${
+                  isActive ? "text-white" : "text-purple-500"
+                } group-hover:text-white font-semibold`}
+              >
+                {feedback.title}
+              </div>
+              <p
+                className={`text-md ${
+                  isActive ? "text-white" : "text-gray-800"
+                } group-hover:text-white`}
+              >
+                {feedback.description}
+              </p>
             </div>
-            <p className="text-md text-gray-800 group-hover:text-white">
-              {feedback.description}
-            </p>
-          </div>
-        );
-      })}
-      <FeedbackForm onSubmit={handleSumbit} />
+          );
+        })}
+        <FeedbackForm onSubmit={handleSumbit} />
+      </div>
+      {selectedFeedback ? (
+        <div className="fixed top-0 right-0 min-h-screen w-1/3 bg-purple-200 pt-20 pb-3 overflow-x-hidden overflow-y-auto shadow-md">
+          <Comments
+            productId={product.id}
+            issueNumber={Number(selectedFeedback.id)}
+          />
+        </div>
+      ) : null}
     </div>
   );
 };
