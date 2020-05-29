@@ -1,16 +1,25 @@
+import { IProduct } from "../Product/types";
+
 export interface IFeedback {
   id: string;
   title: string;
   description?: string;
-  product: string;
-  user: string;
+  product: IProduct;
+  user: IGithubUser;
   state: string;
   createdAt: number;
   updatedAt: number;
 }
 
+export interface IGithubUser {
+  username: string;
+  avatarUrl: string;
+}
+
 export interface FeedbacksVars {
   productId: string;
+  limit?: number;
+  offset: number;
 }
 
 export interface FeedbacksData {

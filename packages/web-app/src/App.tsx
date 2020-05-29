@@ -10,6 +10,9 @@ import Install from "./views/Install";
 import ListRepositories from "./views/ListRepositories";
 import CreateProduct from "./views/CreateProduct";
 import Product from "./views/Product";
+import Menu from "./views/Menu";
+import Comments from "./views/Comments";
+import DefaultRoute from "./components/EnhancedRoutes/DefaultRoute";
 
 function App() {
   return (
@@ -28,9 +31,15 @@ function App() {
           <ProtectedRoute exact path="/create-product">
             <CreateProduct />
           </ProtectedRoute>
-          <Route exact path="/:productUrl">
-            <Product />
+          <Route exact path="/layout">
+            <Menu />
           </Route>
+          <DefaultRoute exact path="/:productUrl">
+            <Product />
+          </DefaultRoute>
+          <DefaultRoute exact path="/:productUrl/:issueNumber">
+            <Comments />
+          </DefaultRoute>
           <ProtectedRoute exact path="/">
             <Home />
           </ProtectedRoute>

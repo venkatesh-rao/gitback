@@ -37,7 +37,7 @@ const FeedbackForm: React.FC<IFeedbackFormProps> = (props) => {
         const isInvalid = !formProps.dirty || !formProps.isValid;
 
         return (
-          <Form className="block w-full bg-purple-100 border-2 border-dashed border-gray-500 rounded-md p-4 my-4">
+          <Form>
             <Field name="title">
               {({ field }: FieldProps) => {
                 return (
@@ -46,7 +46,7 @@ const FeedbackForm: React.FC<IFeedbackFormProps> = (props) => {
                       Title
                     </label>
                     <input
-                      className="block bg-purple-100 font-semibold text-xl mt-1 text-purple-500 w-full outline-none"
+                      className="block bg-transparent font-semibold text-xl mt-1 text-purple-500 w-full outline-none"
                       placeholder="Feedback title"
                       {...field}
                     />
@@ -62,7 +62,7 @@ const FeedbackForm: React.FC<IFeedbackFormProps> = (props) => {
                       Description
                     </label>
                     <textarea
-                      className="block mt-1 bg-purple-100 text-md text-gray-800 w-full resize-none outline-none"
+                      className="block mt-1 bg-transparent text-md text-gray-800 w-full resize-none outline-none"
                       placeholder="A brief description about your feedback"
                       {...field}
                     />

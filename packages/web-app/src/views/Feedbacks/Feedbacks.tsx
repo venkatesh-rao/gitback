@@ -1,33 +1,40 @@
+import { useApolloClient, useMutation, useQuery } from "@apollo/client";
+import { FormikHelpers } from "formik";
 import React from "react";
+import { FaPlus } from "react-icons/fa";
+import { Modal, useModal } from "react-morphing-modal";
+import "react-morphing-modal/dist/ReactMorphingModal.css";
+import FeedbackCard from "../../components/Feedbacks/FeedbackCard";
 import { IProduct } from "../Product/types";
-import { FEEDBACKS_QUERY, CREATE_FEEDBACK_MUTATION } from "./query";
-import { useQuery, useMutation, useApolloClient } from "@apollo/client";
+import FeedbackForm, { IFormValues } from "./FeedbackForm";
+import { CREATE_FEEDBACK_MUTATION, FEEDBACKS_QUERY } from "./query";
 import {
+  CreateFeedbackData,
+  CreateFeedbackVars,
   FeedbacksData,
   FeedbacksVars,
-  CreateFeedbackVars,
-  CreateFeedbackData,
-  IFeedback,
 } from "./types";
-import FeedbackForm, { IFormValues } from "./FeedbackForm";
-import { FormikHelpers } from "formik";
-import Comments from "../Comments";
+
+const FEEDBACKS_LIMIT = 10;
 
 interface IFeedbacksProps {
   product: IProduct;
 }
 
 const Feedbacks: React.FC<IFeedbacksProps> = ({ product }) => {
-  const [
-    selectedFeedback,
-    setSelectedFeedback,
-  ] = React.useState<IFeedback | null>(null);
+  const { modalProps, getTriggerProps } = useModal({
+    background: "#00000090",
+  });
+
+  const triggerProps = getTriggerProps();
 
   const { data, loading, error } = useQuery<FeedbacksData, FeedbacksVars>(
     FEEDBACKS_QUERY,
     {
       variables: {
         productId: product.id,
+        limit: FEEDBACKS_LIMIT,
+        offset: 0,
       },
     }
   );
@@ -106,59 +113,41 @@ const Feedbacks: React.FC<IFeedbacksProps> = ({ product }) => {
     return null;
   }
 
-  if (!selectedFeedback && data.feedbacks.length > 0) {
-    setSelectedFeedback(data.feedbacks[0]);
-  }
-
   return (
-    <div className="w-full">
-      <div
-        className={`w-full md:w-2/3 pr-6 ${
-          selectedFeedback ? "m-0" : " mx-auto"
-        }`}
-      >
+    <div className="relative">
+      <div className="max-w-2xl w-full transition-all ease duration-300 mx-auto mb-20 xl:mb-0">
         {data.feedbacks.length < 1 ? (
           <p className="text-gray-700 text-xl py-16 text-center">
             Be the first to give a feedback
           </p>
         ) : null}
         {data.feedbacks.map((feedback) => {
-          const isActive =
-            selectedFeedback && selectedFeedback.id === feedback.id;
           return (
-            <div
+            <FeedbackCard
+              to={`/${product.url}/${feedback.id}`}
               key={feedback.id}
-              className={`group transition duration-200 hover:bg-purple-500 ${
-                isActive ? "bg-purple-500" : "bg-white"
-              } shadow-md rounded-md p-4 my-4 cursor-pointer`}
-            >
-              <div
-                className={`text-xl mb-1 ${
-                  isActive ? "text-white" : "text-purple-500"
-                } group-hover:text-white font-semibold`}
-              >
-                {feedback.title}
-              </div>
-              <p
-                className={`text-md ${
-                  isActive ? "text-white" : "text-gray-800"
-                } group-hover:text-white`}
-              >
-                {feedback.description}
-              </p>
-            </div>
+              {...feedback}
+            />
           );
         })}
-        <FeedbackForm onSubmit={handleSumbit} />
       </div>
-      {selectedFeedback ? (
-        <div className="fixed top-0 right-0 min-h-screen w-1/3 bg-purple-200 pt-20 pb-3 overflow-x-hidden overflow-y-auto shadow-md">
-          <Comments
-            productId={product.id}
-            issueNumber={Number(selectedFeedback.id)}
-          />
+      <div
+        className="fixed z-20 h-10 px-4 bg-purple-800 rounded-full flex items-center justify-center shadow-2xl cursor-pointer transition-transform duration-300 transform hover:-translate-y-1"
+        style={{
+          position: "fixed",
+          bottom: "2rem",
+          right: "2rem",
+        }}
+        {...triggerProps}
+      >
+        <FaPlus className="text-sm text-white mr-2" />
+        <p className="text-white">Add Feedback</p>
+      </div>
+      <Modal {...modalProps}>
+        <div className="block w-full max-w-2xl mx-auto bg-white rounded-md shadow-md p-4 my-4">
+          <FeedbackForm onSubmit={handleSumbit} />
         </div>
-      ) : null}
+      </Modal>
     </div>
   );
 };

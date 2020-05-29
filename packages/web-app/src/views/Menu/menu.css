@@ -1,0 +1,16 @@
+.menubar {
+  width: 20%;
+}
+
+.menubar.menu-close {
+  width: 0;
+}
+
+.main-container {
+  width: 80%;
+  min-height: calc(100vh - 3rem);
+}
+
+.main-container.menu-close {
+  width: 100%;
+}

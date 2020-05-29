@@ -1,6 +1,6 @@
 import React from "react";
 import { FaPlus } from "react-icons/fa";
-import { LoggedInUserProps } from "../components/EnhancedRoutes/ProtectedRoute";
+import { LoggedInUserProps } from "../components/EnhancedRoutes/types";
 import { Link, useHistory } from "react-router-dom";
 import ReactDOM from "react-dom";
 import { useMutation } from "@apollo/client";

@@ -7,8 +7,8 @@ import {
 } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { LOGGED_IN_USER_QUERY } from "./query";
-import Layout from "../../layout";
 import { LoggedInUserProps, LoggedInUserData } from "./types";
+import MenuLayout from "../../views/Menu/Menu";
 
 interface EnhancedRouterProps extends RouteProps {
   component?:
@@ -16,7 +16,17 @@ interface EnhancedRouterProps extends RouteProps {
     | React.ComponentType<any & LoggedInUserProps>;
 }
 
-const ProtectedRoute = ({ children, ...rest }: EnhancedRouterProps) => {
+export interface IHeaderData {
+  title?: string;
+  link?: string;
+}
+
+const DefaultRoute = ({ children, ...rest }: EnhancedRouterProps) => {
+  const [header, setHeader] = React.useState<IHeaderData>({
+    title: "Gitback",
+    link: "/",
+  });
+
   const { data, error, loading } = useQuery<LoggedInUserData>(
     LOGGED_IN_USER_QUERY
   );
@@ -25,21 +35,22 @@ const ProtectedRoute = ({ children, ...rest }: EnhancedRouterProps) => {
     return <Redirect to="/login" />;
   }
 
-  if (loading) {
-    return <p>Loading</p>;
-  }
-
-  if (error || !data || !data.me) {
-    return <Redirect to="/login" />;
-  }
-
   return (
     <Route {...rest}>
-      <Layout loggedInUser={data.me}>
-        {React.cloneElement(children as any, { loggedInUser: data.me })}
-      </Layout>
+      <MenuLayout
+        title={header.title}
+        titleLink={header.link}
+        view={
+          !loading && !error && data?.me.installationId ? "admin" : "public"
+        }
+      >
+        {React.cloneElement(children as any, {
+          setHeader,
+          loggedInUser: data?.me,
+        })}
+      </MenuLayout>
     </Route>
   );
 };
 
-export default ProtectedRoute;
+export default DefaultRoute;

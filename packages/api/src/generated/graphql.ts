@@ -46,8 +46,8 @@ export type Feedback = {
   id: Scalars['ID'];
   title: Scalars['String'];
   description?: Maybe<Scalars['String']>;
-  product: Scalars['ID'];
-  user: Scalars['String'];
+  product?: Maybe<Product>;
+  user: GihubUser;
   state: Scalars['String'];
   createdAt: Scalars['Float'];
   updatedAt: Scalars['Float'];
@@ -57,9 +57,15 @@ export type Comment = {
    __typename?: 'Comment';
   id: Scalars['Int'];
   body: Scalars['String'];
-  user: Scalars['String'];
+  user: GihubUser;
   createdAt: Scalars['Float'];
   updatedAt: Scalars['Float'];
+};
+
+export type GihubUser = {
+   __typename?: 'GihubUser';
+  username: Scalars['String'];
+  avatarUrl: Scalars['String'];
 };
 
 export type FeedbackInput = {
@@ -74,6 +80,7 @@ export type Query = {
   products?: Maybe<Array<Product>>;
   product: Product;
   feedbacks: Array<Feedback>;
+  feedback: Feedback;
   comments: Array<Comment>;
 };
 
@@ -85,12 +92,22 @@ export type QueryProductArgs = {
 
 export type QueryFeedbacksArgs = {
   productId: Scalars['String'];
+  limit?: Maybe<Scalars['Float']>;
+  offset: Scalars['Float'];
+};
+
+
+export type QueryFeedbackArgs = {
+  productUrl: Scalars['String'];
+  issueNumber: Scalars['Float'];
 };
 
 
 export type QueryCommentsArgs = {
-  productId: Scalars['String'];
+  productUrl: Scalars['String'];
   issueNumber: Scalars['Float'];
+  limit?: Maybe<Scalars['Float']>;
+  offset: Scalars['Float'];
 };
 
 export type Mutation = {
@@ -215,6 +232,7 @@ export type ResolversTypes = ResolversObject<{
   Feedback: ResolverTypeWrapper<Feedback>,
   Comment: ResolverTypeWrapper<Comment>,
   Int: ResolverTypeWrapper<Scalars['Int']>,
+  GihubUser: ResolverTypeWrapper<GihubUser>,
   FeedbackInput: FeedbackInput,
   Query: ResolverTypeWrapper<{}>,
   Mutation: ResolverTypeWrapper<{}>,
@@ -234,6 +252,7 @@ export type ResolversParentTypes = ResolversObject<{
   Feedback: Feedback,
   Comment: Comment,
   Int: Scalars['Int'],
+  GihubUser: GihubUser,
   FeedbackInput: FeedbackInput,
   Query: {},
   Mutation: {},
@@ -274,8 +293,8 @@ export type FeedbackResolvers<ContextType = any, ParentType extends ResolversPar
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  product?: Resolver<ResolversTypes['ID'], ParentType, ContextType>,
-  user?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  product?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType>,
+  user?: Resolver<ResolversTypes['GihubUser'], ParentType, ContextType>,
   state?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   createdAt?: Resolver<ResolversTypes['Float'], ParentType, ContextType>,
   updatedAt?: Resolver<ResolversTypes['Float'], ParentType, ContextType>,
@@ -285,9 +304,15 @@ export type FeedbackResolvers<ContextType = any, ParentType extends ResolversPar
 export type CommentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = ResolversObject<{
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
   body?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
-  user?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  user?: Resolver<ResolversTypes['GihubUser'], ParentType, ContextType>,
   createdAt?: Resolver<ResolversTypes['Float'], ParentType, ContextType>,
   updatedAt?: Resolver<ResolversTypes['Float'], ParentType, ContextType>,
+  __isTypeOf?: isTypeOfResolverFn<ParentType>,
+}>;
+
+export type GihubUserResolvers<ContextType = any, ParentType extends ResolversParentTypes['GihubUser'] = ResolversParentTypes['GihubUser']> = ResolversObject<{
+  username?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
+  avatarUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;
 
@@ -296,8 +321,9 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   repositories?: Resolver<Array<ResolversTypes['Repository']>, ParentType, ContextType>,
   products?: Resolver<Maybe<Array<ResolversTypes['Product']>>, ParentType, ContextType>,
   product?: Resolver<ResolversTypes['Product'], ParentType, ContextType, RequireFields<QueryProductArgs, 'productUrl'>>,
-  feedbacks?: Resolver<Array<ResolversTypes['Feedback']>, ParentType, ContextType, RequireFields<QueryFeedbacksArgs, 'productId'>>,
-  comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<QueryCommentsArgs, 'productId' | 'issueNumber'>>,
+  feedbacks?: Resolver<Array<ResolversTypes['Feedback']>, ParentType, ContextType, RequireFields<QueryFeedbacksArgs, 'productId' | 'offset'>>,
+  feedback?: Resolver<ResolversTypes['Feedback'], ParentType, ContextType, RequireFields<QueryFeedbackArgs, 'productUrl' | 'issueNumber'>>,
+  comments?: Resolver<Array<ResolversTypes['Comment']>, ParentType, ContextType, RequireFields<QueryCommentsArgs, 'productUrl' | 'issueNumber' | 'offset'>>,
 }>;
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
@@ -318,6 +344,7 @@ export type Resolvers<ContextType = any> = ResolversObject<{
   Product?: ProductResolvers<ContextType>,
   Feedback?: FeedbackResolvers<ContextType>,
   Comment?: CommentResolvers<ContextType>,
+  GihubUser?: GihubUserResolvers<ContextType>,
   Query?: QueryResolvers<ContextType>,
   Mutation?: MutationResolvers<ContextType>,
   Upload?: GraphQLScalarType,

@@ -3,13 +3,10 @@ import { QueryCommentsArgs } from "../../generated/graphql";
 import { request } from "@octokit/request";
 import { app } from "../../utils/github";
 
-export async function getComments(
-  args: QueryCommentsArgs,
-  context: ContextWithDBModel
-) {
-  const { productId, issueNumber } = args;
+export async function getComments(args: any, context: ContextWithDBModel) {
+  const { productUrl, issueNumber, limit = 10, offset } = args;
 
-  const product = await context.db.Product.findById(productId)
+  const product = await context.db.Product.findOne({ url: productUrl })
     .populate("owner")
     .lean();
 
@@ -31,6 +28,8 @@ export async function getComments(
       owner: repoOwner,
       repo: repoName,
       issue_number: issueNumber,
+      per_page: limit,
+      page: offset,
       headers: {
         authorization: `token ${appInstallationAccessToken}`,
       },
@@ -42,7 +41,7 @@ export async function getComments(
   return comments.map((comment) => ({
     id: comment.id,
     body: comment.body,
-    user: comment.user.login,
+    user: { username: comment.user.login, avatarUrl: comment.user.avatar_url },
     createdAt: new Date(comment.created_at).getTime(),
     updatedAt: new Date(comment.updated_at).getTime(),
   }));

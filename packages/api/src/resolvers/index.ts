@@ -6,6 +6,7 @@ import {
   MutationResolvers,
   QueryCommentsArgs,
   QueryFeedbacksArgs,
+  QueryFeedbackArgs,
   QueryProductArgs,
   QueryResolvers,
   Resolvers,
@@ -13,7 +14,7 @@ import {
 import { ContextWithDBModel } from "../types";
 import createToken from "../utils/create-token";
 import { app, authenticate } from "../utils/github";
-import { addNewFeedback, getProductFeedbacks } from "./feedback";
+import { addNewFeedback, getProductFeedbacks, getFeedback } from "./feedback";
 import {
   createNewProduct,
   getAllProductsByApp,
@@ -68,6 +69,13 @@ const Query: QueryResolvers = {
     context: ContextWithDBModel
   ) => {
     return getProductFeedbacks(args, context);
+  },
+  feedback: async (
+    _parent,
+    args: QueryFeedbackArgs,
+    context: ContextWithDBModel
+  ) => {
+    return getFeedback(args, context);
   },
 
   comments: async (

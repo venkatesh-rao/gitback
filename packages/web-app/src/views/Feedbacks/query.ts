@@ -1,13 +1,15 @@
 import { gql } from "@apollo/client";
 
 export const FEEDBACKS_QUERY = gql`
-  query Feedbacks($productId: String!) {
-    feedbacks(productId: $productId) {
+  query Feedbacks($productId: String!, $limit: Float, $offset: Float!) {
+    feedbacks(productId: $productId, limit: $limit, offset: $offset) {
       id
       title
       description
-      product
-      user
+      user {
+        username
+        avatarUrl
+      }
       state
       createdAt
       updatedAt
@@ -21,8 +23,10 @@ export const CREATE_FEEDBACK_MUTATION = gql`
       id
       title
       description
-      product
-      user
+      user {
+        username
+        avatarUrl
+      }
       state
       createdAt
       updatedAt

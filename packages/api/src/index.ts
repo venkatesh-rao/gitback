@@ -1,17 +1,16 @@
 require("dotenv").config();
-import { ApolloServer, ApolloError } from "apollo-server-express";
-import { v4 } from "uuid";
+import { ApolloError, ApolloServer } from "apollo-server-express";
 import cookieParser from "cookie-parser";
 import cors, { CorsOptions } from "cors";
 import express from "express";
-import { verify } from "jsonwebtoken";
+import { GraphQLError } from "graphql";
 import mongoose from "mongoose";
+import { v4 } from "uuid";
 import * as db from "./database/model";
 import resolvers from "./resolvers";
 import typeDefs from "./typedefs";
-import { AccessToken, ContextWithDBModel } from "./types";
-import createToken from "./utils/create-token";
-import { GraphQLError } from "graphql";
+import { ContextWithDBModel } from "./types";
+import { authMiddleware } from "./utils/authMiddleware";
 
 const app = express();
 
@@ -41,7 +40,6 @@ mongoose.connection.once("open", function () {
 const whitelist = [CLIENT_HOST, API_HOST];
 
 // Options for Cross-origin resource sharing(CORS)
-// Options for Cross-origin resource sharing(CORS)
 const corsOptions: CorsOptions = {
   origin(origin, callback) {
     if (!origin) {
@@ -64,43 +62,7 @@ app.use(cors(corsOptions));
 // cookie parser to parse cookies from the request
 app.use(cookieParser());
 
-app.use(async (req, res, next) => {
-  const accessTokenCookie = req.cookies["gitback-at"];
-
-  // if not access token present, skip this step
-  if (!accessTokenCookie) {
-    return next();
-  }
-  // parse the access token
-  try {
-    const data: AccessToken = verify(
-      accessTokenCookie,
-      process.env.ACCESS_TOKEN_SECRET || ""
-    ) as AccessToken;
-
-    if (!data || (!data.githubUserAccessToken && !data.installationId)) {
-      throw new Error("Unauthorized user!");
-    }
-
-    (req as any).githubUserAccessToken = data.githubUserAccessToken;
-    (req as any).userId = data.userId;
-    (req as any).username = data.username;
-    (req as any).installationId = data.installationId;
-
-    const token = createToken(data);
-
-    let cookieAttributes = {};
-
-    res.cookie("gitback-at", token, {
-      ...cookieAttributes,
-      maxAge: 3456000000,
-    });
-  } catch (err) {
-    return next();
-  }
-
-  return next();
-});
+app.use(authMiddleware);
 
 // The ApolloServer constructor requires two parameters: your schema
 // definition and your set of resolvers.

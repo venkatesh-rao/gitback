@@ -31,12 +31,12 @@ const Home: React.FC<IHomeProps> = (props) => {
         return (
           <Link
             to={`/${product.url}`}
-            className="bg-white flex flex-col items-center rounded-md shadow-md w-full max-w-xs px-2 duration-200 transform hover:-translate-y-1 mr-0 mb-6 md:mr-6 md:mb-0"
+            className="border-l-8 border-transparent hover:border-purple-700 bg-white rounded-md shadow-md w-full max-w-xs py-3 px-6 mr-0 mb-6 md:mr-6 md:mb-0"
           >
-            <div className="text-xl w-full text-center my-2 text-purple-500 font-semibold">
+            <h6 className="text-xl w-full text-purple-500 font-semibold mb-2">
               {product.name}
-            </div>
-            <div className="inline-flex flex-row justify-center my-4">
+            </h6>
+            {/* <div className="inline-flex flex-row m-4">
               {product.developers.map((developer, index) => {
                 return (
                   <span
@@ -49,8 +49,8 @@ const Home: React.FC<IHomeProps> = (props) => {
                   </span>
                 );
               })}
-            </div>
-            <div className="flex flex-row items-center rounded-md text-gray-700 my-2 p-1">
+            </div> */}
+            <div className="flex flex-row items-center rounded-md text-gray-700">
               <GoRepo className="inline-block mr-1" />
               <div>{product.repositoryName}</div>
             </div>

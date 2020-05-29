@@ -37,8 +37,8 @@ const typeDefs: DocumentNode = gql`
     id: ID!
     title: String!
     description: String
-    product: ID!
-    user: String!
+    product: Product
+    user: GihubUser!
     state: String!
     createdAt: Float!
     updatedAt: Float!
@@ -47,9 +47,14 @@ const typeDefs: DocumentNode = gql`
   type Comment {
     id: Int!
     body: String!
-    user: String!
+    user: GihubUser!
     createdAt: Float!
     updatedAt: Float!
+  }
+
+  type GihubUser {
+    username: String!
+    avatarUrl: String!
   }
 
   input FeedbackInput {
@@ -66,9 +71,15 @@ const typeDefs: DocumentNode = gql`
 
     products: [Product!]
     product(productUrl: String!): Product!
-    feedbacks(productId: String!): [Feedback!]!
+    feedbacks(productId: String!, limit: Float, offset: Float!): [Feedback!]!
+    feedback(productUrl: String!, issueNumber: Float!): Feedback!
 
-    comments(productId: String!, issueNumber: Float!): [Comment!]!
+    comments(
+      productUrl: String!
+      issueNumber: Float!
+      limit: Float
+      offset: Float!
+    ): [Comment!]!
   }
 
   # The "Mutation" type is special: it lists all of the available mutations that

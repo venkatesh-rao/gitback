@@ -2,6 +2,7 @@ import { request } from "@octokit/request";
 import {
   MutationCreateFeedbackArgs,
   QueryFeedbacksArgs,
+  QueryFeedbackArgs,
 } from "../../generated/graphql";
 import { ContextWithDBModel } from "../../types";
 import { app } from "../../utils/github";
@@ -26,7 +27,7 @@ export async function addNewFeedback(
     throw new Error("invalid product");
   }
 
-  const { owner, repositoryName } = product;
+  const { _id, owner, repositoryName, ...restProductData } = product;
 
   let accessToken = githubUserAccessToken;
 
@@ -55,8 +56,13 @@ export async function addNewFeedback(
     id: `${issue.number}`,
     title: issue.title,
     description: issue.body,
-    product: productId,
-    user: issue.user.login,
+    product: {
+      id: productId,
+      owner,
+      repositoryName,
+      ...restProductData,
+    },
+    user: { username: issue.user.login, avatarUrl: issue.user.avatar_url },
     state: issue.state,
     createdAt: new Date(issue.created_at).getTime(),
     updatedAt: new Date(issue.updated_at).getTime(),
@@ -67,7 +73,7 @@ export async function getProductFeedbacks(
   args: QueryFeedbacksArgs,
   context: ContextWithDBModel
 ) {
-  const { productId } = args;
+  const { productId, limit = 10, offset } = args;
 
   const product = await context.db.Product.findById(productId)
     .populate("owner")
@@ -77,7 +83,7 @@ export async function getProductFeedbacks(
     throw new Error("invalid product");
   }
 
-  const { owner, repositoryName } = product;
+  const { _id, owner, repositoryName, ...restProductData } = product;
 
   const appInstallationAccessToken = await app.getInstallationAccessToken({
     installationId: owner.installationId,
@@ -92,6 +98,8 @@ export async function getProductFeedbacks(
     direction: "desc",
     state: "all",
     labels: "public",
+    per_page: limit as number,
+    page: offset,
     headers: {
       authorization: `token ${appInstallationAccessToken}`,
     },
@@ -104,13 +112,73 @@ export async function getProductFeedbacks(
       id: `${issue.number}`,
       title: issue.title,
       description: issue.body,
-      product: productId,
-      user: issue.user.login,
+      product: {
+        id: productId,
+        owner,
+        repositoryName,
+        ...restProductData,
+      },
+      user: { username: issue.user.login, avatarUrl: issue.user.avatar_url },
       state: issue.state,
       createdAt: new Date(issue.created_at).getTime(),
       updatedAt: new Date(issue.updated_at).getTime(),
     };
   });
+
+  return sanitizedFeedbacks;
+}
+
+export async function getFeedback(
+  args: QueryFeedbackArgs,
+  context: ContextWithDBModel
+) {
+  const { productUrl, issueNumber } = args;
+
+  const product = await context.db.Product.findOne({ url: productUrl })
+    .populate("owner")
+    .lean();
+
+  if (!product) {
+    throw new Error("invalid product");
+  }
+
+  const { _id: productId, owner, repositoryName, ...restProductData } = product;
+
+  const appInstallationAccessToken = await app.getInstallationAccessToken({
+    installationId: owner.installationId,
+  });
+
+  const [repoOwner, repoName] = repositoryName.split("/");
+
+  const response = await request(
+    "GET /repos/:owner/:repo/issues/:issue_number",
+    {
+      owner: repoOwner,
+      repo: repoName,
+      issue_number: issueNumber,
+      headers: {
+        authorization: `token ${appInstallationAccessToken}`,
+      },
+    }
+  );
+
+  const issue = response.data;
+
+  const sanitizedFeedbacks = {
+    id: `${issue.number}`,
+    title: issue.title,
+    description: issue.body,
+    product: {
+      id: productId,
+      owner,
+      repositoryName,
+      ...restProductData,
+    },
+    user: { username: issue.user.login, avatarUrl: issue.user.avatar_url },
+    state: issue.state,
+    createdAt: new Date(issue.created_at).getTime(),
+    updatedAt: new Date(issue.updated_at).getTime(),
+  };
 
   return sanitizedFeedbacks;
 }

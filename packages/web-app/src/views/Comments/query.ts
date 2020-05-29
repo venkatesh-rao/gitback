@@ -1,11 +1,45 @@
 import { gql } from "@apollo/client";
 
 export const COMMENTS_QUERY = gql`
-  query Comments($productId: String!, $issueNumber: Float!) {
-    comments(productId: $productId, issueNumber: $issueNumber) {
+  query Comments(
+    $productUrl: String!
+    $issueNumber: Float!
+    $limit: Float
+    $offset: Float!
+  ) {
+    comments(
+      productUrl: $productUrl
+      issueNumber: $issueNumber
+      limit: $limit
+      offset: $offset
+    ) {
       id
       body
-      user
+      user {
+        username
+        avatarUrl
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+export const FEEDBACK_QUERY = gql`
+  query Feedback($productUrl: String!, $issueNumber: Float!) {
+    feedback(productUrl: $productUrl, issueNumber: $issueNumber) {
+      id
+      title
+      description
+      user {
+        username
+        avatarUrl
+      }
+      product {
+        url
+        name
+      }
+      state
       createdAt
       updatedAt
     }

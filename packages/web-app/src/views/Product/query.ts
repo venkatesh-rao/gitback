@@ -8,6 +8,7 @@ export const PRODUCT_QUERY = gql`
       url
       repositoryName
       owner {
+        username
         avatarUrl
       }
       developers {
