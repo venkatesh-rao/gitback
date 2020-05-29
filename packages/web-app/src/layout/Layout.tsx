@@ -4,7 +4,7 @@ import { LoggedInUserProps } from "../components/EnhancedRoutes/types";
 import { Link, useHistory } from "react-router-dom";
 import ReactDOM from "react-dom";
 // import { useMutation } from "@apollo/client";
-import { LogoutData } from "./types";
+// import { LogoutData } from "./types";
 // import { LOGOUT_MUTATION } from "./query";
 import { History } from "history";
 import { AUTH_TOKEN } from "../constants";
