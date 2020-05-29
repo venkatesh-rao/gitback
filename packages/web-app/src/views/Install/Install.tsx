@@ -4,6 +4,7 @@ import { GithubAppAuthenticateData, GithubAppAuthenticateVars } from "./types";
 import { GITHUB_APP_AUTHENTICATE_QUERY } from "./query";
 import { useMutation } from "@apollo/client";
 import { Redirect } from "react-router-dom";
+import { AUTH_TOKEN } from "../../constants";
 
 const Install: React.FC<any> = () => {
   const queryParams = useQueryParams();
@@ -29,6 +30,7 @@ const Install: React.FC<any> = () => {
         });
 
         if (response && response.data && response.data.githubAppAuthenticate) {
+          localStorage.setItem(AUTH_TOKEN, response.data.githubAppAuthenticate);
           setSuccess(true);
         }
       } catch (error) {}

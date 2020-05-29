@@ -3,10 +3,11 @@ import { FaPlus } from "react-icons/fa";
 import { LoggedInUserProps } from "../components/EnhancedRoutes/types";
 import { Link, useHistory } from "react-router-dom";
 import ReactDOM from "react-dom";
-import { useMutation } from "@apollo/client";
+// import { useMutation } from "@apollo/client";
 import { LogoutData } from "./types";
-import { LOGOUT_MUTATION } from "./query";
+// import { LOGOUT_MUTATION } from "./query";
 import { History } from "history";
+import { AUTH_TOKEN } from "../constants";
 
 const { REACT_APP_GITHUB_APP_NAME } = process.env;
 
@@ -117,21 +118,22 @@ const Avatar: React.FC<IAvatarProps> = (props: IAvatarProps) => {
     menuOpenRef.current = !menuOpenRef.current;
   }, []);
 
-  const [logout, { loading: logoutLoading }] = useMutation<LogoutData>(
-    LOGOUT_MUTATION
-  );
+  // const [logout, { loading: logoutLoading }] = useMutation<LogoutData>(
+  //   LOGOUT_MUTATION
+  // );
 
-  const handleLogout = React.useCallback(async () => {
-    if (logoutLoading) return;
+  const handleLogout = React.useCallback(() => {
+    // if (logoutLoading) return;
 
     try {
-      await logout();
+      // await logout();
+      localStorage.removeItem(AUTH_TOKEN);
     } catch (err) {}
 
     toggleMenu();
 
     history.push("/");
-  }, [logout, logoutLoading, toggleMenu, history]);
+  }, [toggleMenu, history]);
 
   return (
     <div className="ml-3 relative" ref={wrapperRef}>

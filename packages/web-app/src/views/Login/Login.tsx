@@ -9,6 +9,7 @@ import {
 import { FaGithub } from "react-icons/fa";
 import DeveloperActivity from "../../assets/img/developer-activity.png";
 import { useQueryParams } from "../../utils";
+import { AUTH_TOKEN } from "../../constants";
 
 const {
   REACT_APP_GITHUB_OAUTH_CLIENT_ID,
@@ -60,6 +61,10 @@ function Login() {
         });
 
         if (response && response.data && response.data.githubUserAuthenticate) {
+          localStorage.setItem(
+            AUTH_TOKEN,
+            response.data.githubUserAuthenticate
+          );
           setSuccess(true);
         }
       } catch (error) {}
