@@ -39,9 +39,11 @@ export function authenticate(code: string, type: string): Promise<string> {
   });
 }
 
-const PRIVATE_KEY = fs.readFileSync(
-  path.join(__dirname, `../../${process.env.PEM_FILE_NAME_WITH_EXTENSION}`),
-  "utf8"
-);
+const PRIVATE_KEY = process.env.PRIVATE_KEY
+  ? process.env.PRIVATE_KEY.replace(/\\n/g, "\n")
+  : fs.readFileSync(
+      path.join(__dirname, `../../${process.env.PEM_FILE_NAME_WITH_EXTENSION}`),
+      "utf8"
+    );
 
 export const app = new App({ id: Number(APP_ID), privateKey: PRIVATE_KEY });
