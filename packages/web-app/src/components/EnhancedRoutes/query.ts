@@ -7,7 +7,7 @@ export const LOGGED_IN_USER_QUERY = gql`
       username
       publicEmail
       avatarUrl
-      installationId
+      userType
     }
   }
 `;
