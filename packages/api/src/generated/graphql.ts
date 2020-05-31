@@ -18,7 +18,7 @@ export type User = {
   avatarUrl: Scalars['String'];
   name?: Maybe<Scalars['String']>;
   publicEmail?: Maybe<Scalars['String']>;
-  installationId?: Maybe<Scalars['Float']>;
+  userType: Scalars['String'];
 };
 
 export type Repository = {
@@ -225,8 +225,8 @@ export type ResolversTypes = ResolversObject<{
   String: ResolverTypeWrapper<Scalars['String']>,
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>,
   User: ResolverTypeWrapper<User>,
-  Float: ResolverTypeWrapper<Scalars['Float']>,
   Repository: ResolverTypeWrapper<Repository>,
+  Float: ResolverTypeWrapper<Scalars['Float']>,
   Product: ResolverTypeWrapper<Product>,
   ID: ResolverTypeWrapper<Scalars['ID']>,
   Feedback: ResolverTypeWrapper<Feedback>,
@@ -245,8 +245,8 @@ export type ResolversParentTypes = ResolversObject<{
   String: Scalars['String'],
   Boolean: Scalars['Boolean'],
   User: User,
-  Float: Scalars['Float'],
   Repository: Repository,
+  Float: Scalars['Float'],
   Product: Product,
   ID: Scalars['ID'],
   Feedback: Feedback,
@@ -265,7 +265,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   avatarUrl?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
   publicEmail?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>,
-  installationId?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>,
+  userType?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   __isTypeOf?: isTypeOfResolverFn<ParentType>,
 }>;
 

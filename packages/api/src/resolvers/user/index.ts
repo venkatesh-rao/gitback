@@ -8,14 +8,14 @@ export async function getLoggedInUser(context: ContextWithDBModel) {
     return null;
   }
 
-  const { username, avatarUrl, name, publicEmail, installationId } = user;
+  const { username, avatarUrl, name, publicEmail } = user;
 
   return {
     username,
     avatarUrl,
     name,
     publicEmail,
-    installationId,
+    userType: user.getUserType(),
   };
 }
 
