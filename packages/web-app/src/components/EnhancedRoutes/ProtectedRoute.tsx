@@ -35,9 +35,9 @@ const ProtectedRoute = ({ children, ...rest }: EnhancedRouterProps) => {
 
   return (
     <Route {...rest}>
-      <Layout loggedInUser={data.me}>
+      <Layout.AdminLayout loggedInUser={data.me}>
         {React.cloneElement(children as any, { loggedInUser: data.me })}
-      </Layout>
+      </Layout.AdminLayout>
     </Route>
   );
 };

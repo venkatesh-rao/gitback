@@ -1,4 +1,4 @@
-import { IUser } from "../Home/types";
+import { IUser } from "../../components/EnhancedRoutes/types";
 
 export interface IProduct {
   id: string | any;

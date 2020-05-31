@@ -9,13 +9,13 @@ export const MenuContext = React.createContext({
   toggleMenu: () => {},
 });
 
-interface IMenuLayoutProps {
+interface IPublicLayoutProps {
   view?: "admin" | "public";
   title?: string;
   titleLink?: string;
 }
 
-const MenuLayout: React.FC<IMenuLayoutProps> = ({
+const PublicLayout: React.FC<IPublicLayoutProps> = ({
   children,
   view = "public",
   title = "Gitback",
@@ -42,7 +42,7 @@ const MenuLayout: React.FC<IMenuLayoutProps> = ({
             </div>
             <Link
               to={titleLink}
-              className="text-white ml-4 cursor-pointer font-hairline uppercase tracking-wider"
+              className="text-white ml-4 cursor-pointer font-normal uppercase tracking-wider"
             >
               {title}
             </Link>
@@ -70,4 +70,4 @@ const MenuLayout: React.FC<IMenuLayoutProps> = ({
   );
 };
 
-export default MenuLayout;
+export default PublicLayout;

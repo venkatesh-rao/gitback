@@ -1,3 +1,4 @@
-import Layout from "./Layout";
+import AdminLayout from "./AdminLayout";
+import PublicLayout from "./PublicLayout";
 
-export default Layout;
+export default { AdminLayout, PublicLayout };

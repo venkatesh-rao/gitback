@@ -5,13 +5,14 @@ import Error from "../../components/Error/Error";
 import Feedbacks from "../Feedbacks";
 import { PRODUCT_QUERY } from "./query";
 import { ProductData, ProductVars } from "./types";
-import { IHeaderData } from "../../components/EnhancedRoutes/DefaultRoute";
+import { IUser } from "../../components/EnhancedRoutes/types";
+import Layout from "../../layout";
 
 interface IProductProps {
-  setHeader?: (headerData: IHeaderData) => void;
+  user?: IUser;
 }
 
-const Product: React.FC<IProductProps> = ({ setHeader }) => {
+const Product: React.FC<IProductProps> = () => {
   const { productUrl } = useParams();
 
   const { data, loading, error } = useQuery<ProductData, ProductVars>(
@@ -22,13 +23,6 @@ const Product: React.FC<IProductProps> = ({ setHeader }) => {
       },
     }
   );
-
-  React.useEffect(() => {
-    if (setHeader && data?.product) {
-      const { name: title, url: link } = data.product;
-      setHeader({ title, link });
-    }
-  }, [data, setHeader]);
 
   if (loading) {
     return <p>Loading</p>;
@@ -44,7 +38,11 @@ const Product: React.FC<IProductProps> = ({ setHeader }) => {
 
   const { product } = data;
 
-  return <Feedbacks product={product} />;
+  return (
+    <Layout.PublicLayout title={product.name} titleLink={product.url}>
+      <Feedbacks product={product} />
+    </Layout.PublicLayout>
+  );
 };
 
 export default Product;
