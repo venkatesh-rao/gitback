@@ -1,5 +1,6 @@
 import React from "react";
-import { IUser, ProductsData } from "./types";
+import { ProductsData } from "./types";
+import { IUser } from "../../components/EnhancedRoutes/types";
 import { PRODUCTS_QUERY } from "./query";
 import { useQuery } from "@apollo/client";
 import { Link } from "react-router-dom";

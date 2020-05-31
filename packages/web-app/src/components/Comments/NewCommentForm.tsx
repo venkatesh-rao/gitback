@@ -1,5 +1,5 @@
 import React, { memo, FC } from "react";
-import { IUser } from "../../views/Home/types";
+import { IUser } from "../EnhancedRoutes/types";
 import { IFeedback } from "../../views/Feedbacks/types";
 
 interface INewCommentFormProps {
@@ -16,7 +16,11 @@ const NewCommentForm: FC<INewCommentFormProps> = memo(({ loggedInUser }) => {
           alt={loggedInUser.username}
           className="h-10 w-10 shadow-xs rounded"
         />
-      ) : null}
+      ) : (
+        <div className="h-10 w-10 shadow-xs rounded leading-10 text-center bg-gray-200 text-gray-800">
+          A
+        </div>
+      )}
       <textarea
         className="max-w-md w-full rounded ml-6 px-2 py-3 resize-none bg-white border border-gray-300 hover:border-transparent outline-none focus:shadow-outline overflow-y-auto overflow-x-hidden whitespace-pre-wrap"
         style={{
