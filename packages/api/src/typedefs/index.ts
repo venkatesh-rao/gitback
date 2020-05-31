@@ -12,7 +12,7 @@ const typeDefs: DocumentNode = gql`
     avatarUrl: String!
     name: String
     publicEmail: String
-    installationId: Float
+    userType: String!
   }
 
   type Repository {
