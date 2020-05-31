@@ -18,7 +18,10 @@ const {
   MONGO_URL = "mongodb://localhost/gitback",
   CLIENT_HOST,
   API_HOST,
+  NODE_ENV,
 } = process.env;
+
+const IS_PRODUCTION = NODE_ENV === "production";
 
 mongoose.connect(MONGO_URL, {
   useNewUrlParser: true,
@@ -71,7 +74,7 @@ const server = new ApolloServer({
   resolvers,
   context: ({ req, res }) => ({ req, res, db } as ContextWithDBModel),
   formatError: (error: GraphQLError) => {
-    if (error.originalError instanceof ApolloError) {
+    if (!IS_PRODUCTION || error.originalError instanceof ApolloError) {
       return error;
     }
 
