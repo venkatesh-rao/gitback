@@ -25,10 +25,9 @@ export async function authMiddleware(
       throw new Error("Unauthorized user!");
     }
 
-    req = {
-      ...req,
-      ...data,
-    } as any;
+    (req as any).githubUserAccessToken = data.githubUserAccessToken;
+    (req as any).userId = data.userId;
+    (req as any).username = data.username;
   } catch (err) {
     return next();
   }
