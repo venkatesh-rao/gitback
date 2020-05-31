@@ -10,7 +10,7 @@ const setAuthorizationLink = setContext(() => {
 });
 
 const httpLink = new HttpLink({
-  uri: process.env.REACT_APP_API_ENDPOINT,
+  uri: "http://192.168.1.8:4000" || process.env.REACT_APP_API_ENDPOINT,
   // credentials: "include",
 });
 

@@ -1,50 +1,49 @@
 import React from "react";
-import { FaPlus } from "react-icons/fa";
-import { LoggedInUserProps } from "../components/EnhancedRoutes/types";
+import { IoIosAdd } from "react-icons/io";
 import { Link, useHistory } from "react-router-dom";
-import ReactDOM from "react-dom";
-// import { useMutation } from "@apollo/client";
-// import { LogoutData } from "./types";
-// import { LOGOUT_MUTATION } from "./query";
-import { History } from "history";
-import { AUTH_TOKEN } from "../constants";
+import { IUser } from "../components/EnhancedRoutes/types";
+import { MenuContext } from "./PublicLayout";
+import { Avatar } from "../components/User/Avatar";
 
 const { REACT_APP_GITHUB_APP_NAME } = process.env;
 
-interface IAdminLayoutProps {}
+interface IAdminLayoutProps {
+  user: IUser;
+}
 
-const AdminLayout: React.FC<IAdminLayoutProps & LoggedInUserProps> = (props) => {
-  const { avatarUrl, installationId } = props.loggedInUser!;
+const AdminLayout: React.FC<IAdminLayoutProps> = (props) => {
+  const { avatarUrl, userType } = props.user;
 
   const history = useHistory();
 
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
+  const toggleMenu = React.useCallback(() => {
+    setIsMenuOpen((prev) => !prev);
+  }, []);
+
   const buttonProps = {
     className:
-      "inline-flex hover:bg-purple-100 bg-purple-700 hover:text-purple-700 text-purple-100 text-sm duration-200 ease-in-out py-1 px-4 rounded items-center",
+      "block rounded-sm hover:bg-white hover:bg-opacity-25 cursor-pointer",
   };
 
-  const buttonChildren = (
-    <>
-      <FaPlus className="mr-2 text-xs" />
-      Create a product
-    </>
-  );
+  const buttonChildren = <IoIosAdd className="text-white text-3xl" />;
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <nav className="flex items-center justify-between flex-wrap bg-white p-3 shadow-md z-10">
-        <div className="flex items-center flex-grow mr-6">
-          <Link
-            to="/"
-            className="text-purple-700 font-semibold text-xl tracking-wide"
-          >
-            GITBACK
-          </Link>
-        </div>
-        <div className="flex items-center">
-          {installationId ? (
-            <Link {...buttonProps} to="/create-product">
-              {buttonChildren}
+    <MenuContext.Provider value={{ isMenuOpen, toggleMenu }}>
+      <div className="overflow-x-hidden">
+        <nav className="sticky top-0 w-screen px-4 h-12 z-20 flex flex-row items-center bg-purple-800 shadow">
+          <div className="flex-1 flex items-center">
+            <Link
+              to="/"
+              className="text-white cursor-pointer font-normal uppercase tracking-wider"
+            >
+              Gitback
+            </Link>
+          </div>
+          {userType === "ProductOwner" ? (
+            <Link to="/create-product" {...buttonProps}>
+              <IoIosAdd className="text-white text-3xl" />
             </Link>
           ) : (
             <a
@@ -55,111 +54,21 @@ const AdminLayout: React.FC<IAdminLayoutProps & LoggedInUserProps> = (props) => 
             </a>
           )}
           <Avatar avatarUrl={avatarUrl!} history={history} />
-        </div>
-      </nav>
-      <main className="p-6 bg-purple-100 flex-1 flex-grow">
-        {props.children}
-      </main>
-    </div>
-  );
-};
-
-/**
- * Hook that alerts clicks outside of the passed ref
- */
-function useOutsideAlerter(
-  ref: React.RefObject<HTMLDivElement>,
-  callback: () => void
-) {
-  React.useEffect(() => {
-    /**
-     * Alert if clicked on outside of element
-     */
-    function handleClickOutside(this: Document, ev: MouseEvent) {
-      if (
-        ev.target instanceof HTMLElement &&
-        !ReactDOM.findDOMNode(ref.current)!.contains(ev.target)
-      )
-        if (ref.current && !ref.current.contains(ev.target)) {
-          callback();
-        }
-    }
-
-    // Bind the event listener
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      // Unbind the event listener on clean up
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [ref, callback]);
-}
-
-interface IAvatarProps {
-  avatarUrl: string;
-  history: History<History.PoorMansUnknown>;
-}
-
-const Avatar: React.FC<IAvatarProps> = (props: IAvatarProps) => {
-  const { avatarUrl, history } = props;
-  const [menuOpen, setMenuOpen] = React.useState(false);
-
-  const menuOpenRef = React.useRef(menuOpen);
-
-  const wrapperRef = React.useRef<HTMLDivElement>(null);
-  useOutsideAlerter(wrapperRef, () => {
-    if (menuOpenRef.current) {
-      setMenuOpen(false);
-      menuOpenRef.current = false;
-    }
-  });
-
-  const toggleMenu = React.useCallback(() => {
-    setMenuOpen((prev) => !prev);
-    menuOpenRef.current = !menuOpenRef.current;
-  }, []);
-
-  // const [logout, { loading: logoutLoading }] = useMutation<LogoutData>(
-  //   LOGOUT_MUTATION
-  // );
-
-  const handleLogout = React.useCallback(() => {
-    // if (logoutLoading) return;
-
-    try {
-      // await logout();
-      localStorage.removeItem(AUTH_TOKEN);
-    } catch (err) {}
-
-    toggleMenu();
-
-    history.push("/");
-  }, [toggleMenu, history]);
-
-  return (
-    <div className="ml-3 relative" ref={wrapperRef}>
-      <img
-        alt="Github user"
-        role="button"
-        className="w-6 h-6 shadow-xs rounded-full"
-        src={avatarUrl}
-        onClick={toggleMenu}
-      />
-      <div
-        className={`${
-          menuOpen ? "block" : "hidden"
-        } absolute right-0 py-2 w-40 rounded shadow-md bg-white`}
-      >
-        <ul>
-          <li
-            role="button"
-            onClick={handleLogout}
-            className="text-red-500 py-1 px-2 text-center cursor-pointer bg-white hover:bg-red-100"
-          >
-            Logout
-          </li>
-        </ul>
+        </nav>
+        <aside
+          className={`fixed top-0 left-0 bottom-0 pt-4 bg-white transition-all ease duration-300 menubar ${
+            !isMenuOpen && "menu-close"
+          }`}
+        ></aside>
+        <main
+          className={`main-container ${
+            !isMenuOpen && "menu-close"
+          } transition-all ease duration-300 ml-auto p-4 bg-gray-100`}
+        >
+          {props.children}
+        </main>
       </div>
-    </div>
+    </MenuContext.Provider>
   );
 };
 

@@ -22,7 +22,7 @@ const NewCommentForm: FC<INewCommentFormProps> = memo(({ loggedInUser }) => {
         </div>
       )}
       <textarea
-        className="max-w-md w-full rounded ml-6 px-2 py-3 resize-none bg-white border border-gray-300 hover:border-transparent outline-none focus:shadow-outline overflow-y-auto overflow-x-hidden whitespace-pre-wrap"
+        className="flex-1 md:flex-auto md:max-w-md w-full rounded ml-6 px-2 py-3 resize-none bg-white border border-gray-300 hover:shadow-md outline-none focus:shadow-outline overflow-y-auto overflow-x-hidden whitespace-pre-wrap"
         style={{
           minHeight: "5rem",
           maxHeight: "12rem",

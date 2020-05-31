@@ -109,22 +109,22 @@ const Comments: React.FC<ICommentsProps> = (props) => {
 
   const isLoadingMore = loading && networkStatus === 3;
 
+  const { user } = props;
+
   return (
     <Layout.PublicLayout
       title={feedbackData.feedback.product.name}
-      titleLink={feedbackData.feedback.product.url}
+      titleLink={`/${feedbackData.feedback.product.url}`}
+      user={user}
     >
       <div className="w-full max-w-3xl mx-auto">
         <FeedbackHeader {...feedbackData.feedback} />
-        <NewCommentForm
-          loggedInUser={props.user}
-          feedback={feedbackData.feedback}
-        />
+        <NewCommentForm loggedInUser={user} feedback={feedbackData.feedback} />
         <h6 className="text-gray-700 font-semibold mt-8 mb-6 block">
           Comments
         </h6>
         {data.comments.length < 1 ? (
-          <p className="text-gray-600 text-center my-3">
+          <p className="text-gray-700 text-center my-3">
             Be the first to comment!
           </p>
         ) : null}
@@ -153,7 +153,7 @@ const Comments: React.FC<ICommentsProps> = (props) => {
                 {isLoadingMore ? "Loading..." : "Load more..."}
               </button>
             ) : (
-              <p className="text-gray-600">You have seen all the comments</p>
+              <p className="text-gray-700">You have seen all the comments</p>
             )}
           </div>
         ) : null}

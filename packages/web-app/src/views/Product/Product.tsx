@@ -12,7 +12,7 @@ interface IProductProps {
   user?: IUser;
 }
 
-const Product: React.FC<IProductProps> = () => {
+const Product: React.FC<IProductProps> = ({ user }) => {
   const { productUrl } = useParams();
 
   const { data, loading, error } = useQuery<ProductData, ProductVars>(
@@ -39,7 +39,11 @@ const Product: React.FC<IProductProps> = () => {
   const { product } = data;
 
   return (
-    <Layout.PublicLayout title={product.name} titleLink={product.url}>
+    <Layout.PublicLayout
+      title={product.name}
+      titleLink={`/${product.url}`}
+      user={user}
+    >
       <Feedbacks product={product} />
     </Layout.PublicLayout>
   );
