@@ -12,14 +12,13 @@ import { useParams } from "react-router-dom";
 import CommentCard from "../../components/Comments/CommentCard";
 import FeedbackHeader from "../../components/Feedbacks/FeedbackHeader";
 import NewCommentForm from "../../components/Comments/NewCommentForm";
-import { IUser } from "../Home/types";
-import { IHeaderData } from "../../components/EnhancedRoutes/DefaultRoute";
+import { IUser } from "../../components/EnhancedRoutes/types";
+import Layout from "../../layout";
 
 const COMMENTS_LIMIT = 10;
 
 interface ICommentsProps {
-  setHeader?: (headerData: IHeaderData) => void;
-  loggedInUser?: IUser;
+  user?: IUser;
 }
 
 interface ICommentsParams {
@@ -55,13 +54,6 @@ const Comments: React.FC<ICommentsProps> = (props) => {
       issueNumber: Number(params.issueNumber!),
     },
   });
-
-  React.useEffect(() => {
-    if (props.setHeader && feedbackData?.feedback.product) {
-      const { name: title, url: link } = feedbackData.feedback.product;
-      props.setHeader({ title, link });
-    }
-  }, [props, feedbackData]);
 
   const handleLoadMore = React.useCallback(() => {
     if (hasAllLoaded || loading) return;
@@ -118,48 +110,55 @@ const Comments: React.FC<ICommentsProps> = (props) => {
   const isLoadingMore = loading && networkStatus === 3;
 
   return (
-    <div className="w-full max-w-3xl mx-auto">
-      <FeedbackHeader {...feedbackData.feedback} />
-      <NewCommentForm
-        loggedInUser={props.loggedInUser}
-        feedback={feedbackData.feedback}
-      />
-      <h6 className="text-gray-700 font-semibold mt-8 mb-6 block">Comments</h6>
-      {data.comments.length < 1 ? (
-        <p className="text-gray-600 text-center my-3">
-          Be the first to comment!
-        </p>
-      ) : null}
-      {data.comments.map((comment, index) => {
-        const isFirst = index === 0;
-        const isLast = index >= data.comments.length - 1;
-        return (
-          <CommentCard
-            key={comment.id}
-            isFirst={isFirst}
-            isLast={isLast}
-            {...comment}
-          />
-        );
-      })}
-      {data.comments.length > 0 ? (
-        <div className="w-full my-4 text-center">
-          {!hasAllLoaded ? (
-            <button
-              onClick={handleLoadMore}
-              disabled={isLoadingMore}
-              className={`mx-auto my-4 hover:bg-purple-500 text-purple-700 font-semibold hover:text-white py-2 px-4 border border-purple-500 hover:border-transparent rounded ${
-                isLoadingMore && "opacity-50 pointer-events-none"
-              }`}
-            >
-              {isLoadingMore ? "Loading..." : "Load more..."}
-            </button>
-          ) : (
-            <p className="text-gray-600">You have seen all the comments</p>
-          )}
-        </div>
-      ) : null}
-    </div>
+    <Layout.PublicLayout
+      title={feedbackData.feedback.product.name}
+      titleLink={feedbackData.feedback.product.url}
+    >
+      <div className="w-full max-w-3xl mx-auto">
+        <FeedbackHeader {...feedbackData.feedback} />
+        <NewCommentForm
+          loggedInUser={props.user}
+          feedback={feedbackData.feedback}
+        />
+        <h6 className="text-gray-700 font-semibold mt-8 mb-6 block">
+          Comments
+        </h6>
+        {data.comments.length < 1 ? (
+          <p className="text-gray-600 text-center my-3">
+            Be the first to comment!
+          </p>
+        ) : null}
+        {data.comments.map((comment, index) => {
+          const isFirst = index === 0;
+          const isLast = index >= data.comments.length - 1;
+          return (
+            <CommentCard
+              key={comment.id}
+              isFirst={isFirst}
+              isLast={isLast}
+              {...comment}
+            />
+          );
+        })}
+        {data.comments.length > 0 ? (
+          <div className="w-full my-4 text-center">
+            {!hasAllLoaded ? (
+              <button
+                onClick={handleLoadMore}
+                disabled={isLoadingMore}
+                className={`mx-auto my-4 hover:bg-purple-500 text-purple-700 font-semibold hover:text-white py-2 px-4 border border-purple-500 hover:border-transparent rounded ${
+                  isLoadingMore && "opacity-50 pointer-events-none"
+                }`}
+              >
+                {isLoadingMore ? "Loading..." : "Load more..."}
+              </button>
+            ) : (
+              <p className="text-gray-600">You have seen all the comments</p>
+            )}
+          </div>
+        ) : null}
+      </div>
+    </Layout.PublicLayout>
   );
 };
 

@@ -1,54 +1,34 @@
-import React from "react";
-import {
-  Route,
-  Redirect,
-  RouteProps,
-  RouteComponentProps,
-} from "react-router-dom";
-import { useQuery } from "@apollo/client";
+import React, { FC, ReactNode } from "react";
+import { Route, RouteProps, RouteComponentProps } from "react-router-dom";
 import { LOGGED_IN_USER_QUERY } from "./query";
-import { LoggedInUserProps, LoggedInUserData } from "./types";
-import MenuLayout from "../../views/Menu/Menu";
+import { useQuery } from "@apollo/client";
+import { LoggedInUserData } from "./types";
 
-interface EnhancedRouterProps extends RouteProps {
-  component?:
-    | React.ComponentType<RouteComponentProps<any> & LoggedInUserProps>
-    | React.ComponentType<any & LoggedInUserProps>;
+interface IDefaultRouteProps extends RouteProps {
+  component: React.FC<any>;
 }
 
-export interface IHeaderData {
-  title?: string;
-  link?: string;
-}
-
-const DefaultRoute = ({ children, ...rest }: EnhancedRouterProps) => {
-  const [header, setHeader] = React.useState<IHeaderData>({
-    title: "Gitback",
-    link: "/",
-  });
-
+const DefaultRoute: FC<IDefaultRouteProps> = ({
+  component: Component,
+  ...rest
+}) => {
   const { data, error, loading } = useQuery<LoggedInUserData>(
     LOGGED_IN_USER_QUERY
   );
 
-  if (!children) {
-    return <Redirect to="/login" />;
+  let authProps = {};
+
+  if (loading) return null;
+
+  if (!error && data && data.me) {
+    authProps = {
+      user: data.me,
+    };
   }
 
   return (
     <Route {...rest}>
-      <MenuLayout
-        title={header.title}
-        titleLink={header.link}
-        view={
-          !loading && !error && data?.me.installationId ? "admin" : "public"
-        }
-      >
-        {React.cloneElement(children as any, {
-          setHeader,
-          loggedInUser: data?.me,
-        })}
-      </MenuLayout>
+      {(props) => <Component {...props} {...authProps} />}
     </Route>
   );
 };

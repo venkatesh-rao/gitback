@@ -11,9 +11,9 @@ import { AUTH_TOKEN } from "../constants";
 
 const { REACT_APP_GITHUB_APP_NAME } = process.env;
 
-interface ILayoutProps {}
+interface IAdminLayoutProps {}
 
-const Layout: React.FC<ILayoutProps & LoggedInUserProps> = (props) => {
+const AdminLayout: React.FC<IAdminLayoutProps & LoggedInUserProps> = (props) => {
   const { avatarUrl, installationId } = props.loggedInUser!;
 
   const history = useHistory();
@@ -163,4 +163,4 @@ const Avatar: React.FC<IAvatarProps> = (props: IAvatarProps) => {
   );
 };
 
-export default Layout;
+export default AdminLayout;
