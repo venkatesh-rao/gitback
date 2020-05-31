@@ -1,7 +1,7 @@
-import { useMutation } from "@apollo/client";
+import { useMutation, useLazyQuery } from "@apollo/client";
 import React, { FC } from "react";
 import { FaGithub } from "react-icons/fa";
-import { Redirect, RouteChildrenProps } from "react-router-dom";
+import { RouteChildrenProps } from "react-router-dom";
 import DeveloperActivity from "../../assets/img/developer-activity.png";
 import { AUTH_TOKEN } from "../../constants";
 import { useQueryParams } from "../../utils";
@@ -10,6 +10,7 @@ import {
   GithubUserAuthenticateData,
   GithubUserAuthenticateVars,
 } from "./types";
+import { LOGGED_IN_USER_QUERY } from "../../components/EnhancedRoutes/query";
 
 const {
   REACT_APP_GITHUB_OAUTH_CLIENT_ID,
@@ -40,51 +41,38 @@ const features: IFeature[] = [
 interface ILoginProps extends RouteChildrenProps {}
 
 const Login: FC<ILoginProps> = (props) => {
-  React.useEffect(() => {
-    const referrer = localStorage.getItem("gitback-login-referrer");
-
-    if (!referrer || referrer === "undefined") {
-      localStorage.setItem(
-        "gitback-login-referrer",
-        JSON.stringify(props.location.state)
-      );
-    }
-
-    return () => {
-      localStorage.removeItem("gitback-login-referrer");
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const queryParams = useQueryParams();
 
   const code = queryParams.get("code");
 
-  const [isSuccess, setSuccess] = React.useState(false);
+  const [getLoggedInUser] = useLazyQuery(LOGGED_IN_USER_QUERY);
 
   const [
     githubUserAuthenticate,
     { loading: githubUserAuthenticateLoading },
   ] = useMutation<GithubUserAuthenticateData, GithubUserAuthenticateVars>(
-    GITHUB_USER_AUTHENTICATE_QUERY
+    GITHUB_USER_AUTHENTICATE_QUERY,
+    {
+      onCompleted: () => {
+        props.history.push("/");
+      },
+    }
   );
 
   const loginAsUser = React.useCallback(
     async (code: string) => {
       try {
-        const response = await githubUserAuthenticate({
+        await githubUserAuthenticate({
           variables: {
             code,
           },
+          refetchQueries: [{ query: LOGGED_IN_USER_QUERY }],
+          awaitRefetchQueries: true,
+          update: (_, { data }) => {
+            if (!data) return;
+            localStorage.setItem(AUTH_TOKEN, data.githubUserAuthenticate);
+          },
         });
-
-        if (response && response.data && response.data.githubUserAuthenticate) {
-          localStorage.setItem(
-            AUTH_TOKEN,
-            response.data.githubUserAuthenticate
-          );
-          setSuccess(true);
-        }
       } catch (error) {}
     },
     [githubUserAuthenticate]
@@ -97,33 +85,24 @@ const Login: FC<ILoginProps> = (props) => {
     }
   }, [loginAsUser, code]);
 
-  if (isSuccess) {
-    let referrer = localStorage.getItem("gitback-login-referrer");
-
-    if (!referrer || referrer === "undefined") {
-      referrer = JSON.stringify({ from: { pathname: "/" } });
-    }
-
-    const { from } = JSON.parse(referrer);
-
-    return <Redirect to={from} />;
-  }
-
   if (githubUserAuthenticateLoading) {
     return <p>loading...</p>;
   }
 
   return (
-    <div className="bg-purple-100 h-screen flex items-center">
+    <div className="bg-purple-100 min-h-screen flex items-center">
       <div
-        className="bg-white max-w-5xl rounded overflow-hidden m-auto"
+        className="h-screen md:h-auto bg-white max-w-5xl rounded overflow-hidden m-auto"
         style={{
           boxShadow:
             "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 -4px 15px -3px rgba(0, 0, 0, 0.1)",
         }}
       >
         <div className="flex-none md:flex md:justify-between md:items-center">
-          <div className="flex-1 text-center p-10">
+          <div className="flex-1 text-center p-2 md:p-10">
+            <h1 className="text-2xl text-purple-700 uppercase font-bold mb-8 mt-8 md:mt-0">
+              Gitback
+            </h1>
             <img
               src={DeveloperActivity}
               alt="Login with github"
@@ -140,7 +119,7 @@ const Login: FC<ILoginProps> = (props) => {
               Login with Github
             </a>
           </div>
-          <div className="flex-1 border-l-0 md:border-l p-10">
+          <div className="flex-1 border-l-0 md:border-l py-2 px-6 md:p-10">
             {features.map((feature: IFeature, index: number) => {
               return (
                 <div key={index} className="my-10">
