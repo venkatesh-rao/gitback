@@ -6,7 +6,7 @@ interface IFeedbackHeaderProps {}
 const FeedbackHeader: React.FC<IFeedbackHeaderProps & IFeedback> = React.memo(
   ({ user, title, description }) => {
     return (
-      <div className="cursor-pointer relative mb-4 py-4 flex">
+      <div className="relative mb-4 py-4 flex flex-row no-highlight">
         <img
           className="mt-2 w-10 h-10 shadow-xs rounded"
           src={user.avatarUrl}

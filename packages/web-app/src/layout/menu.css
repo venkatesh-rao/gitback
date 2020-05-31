@@ -1,5 +1,5 @@
 .menubar {
-  width: 20%;
+  width: 100vw;
 }
 
 .menubar.menu-close {
@@ -7,10 +7,20 @@
 }
 
 .main-container {
-  width: 80%;
+  width: 0;
   min-height: calc(100vh - 3rem);
 }
 
 .main-container.menu-close {
   width: 100%;
+}
+
+@media (min-width: 768px) {
+  .menubar {
+    width: 20%;
+  }
+
+  .main-container {
+    width: 80%;
+  }
 }

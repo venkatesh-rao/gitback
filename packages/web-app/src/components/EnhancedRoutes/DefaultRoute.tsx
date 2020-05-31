@@ -1,11 +1,11 @@
-import React, { FC, ReactNode } from "react";
-import { Route, RouteProps, RouteComponentProps } from "react-router-dom";
-import { LOGGED_IN_USER_QUERY } from "./query";
 import { useQuery } from "@apollo/client";
+import React, { FC } from "react";
+import { Route, RouteProps } from "react-router-dom";
+import { LOGGED_IN_USER_QUERY } from "./query";
 import { LoggedInUserData } from "./types";
 
 interface IDefaultRouteProps extends RouteProps {
-  component: React.FC<any>;
+  component: FC<any>;
 }
 
 const DefaultRoute: FC<IDefaultRouteProps> = ({

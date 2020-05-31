@@ -1,40 +1,40 @@
-import React from "react";
-import {
-  Route,
-  Redirect,
-  RouteProps,
-  RouteComponentProps,
-} from "react-router-dom";
 import { useQuery } from "@apollo/client";
+import React, { FC } from "react";
+import { Redirect, Route, RouteProps } from "react-router-dom";
+import { IUser, LoggedInUserData } from "../EnhancedRoutes/types";
 import { LOGGED_IN_USER_QUERY } from "./query";
-import { IUser } from "../EnhancedRoutes/types";
 
 interface LoggedInUserProps {
   loggedInUser?: IUser;
 }
 
-interface EnhancedRouterProps extends RouteProps {
-  component?:
-    | React.ComponentType<RouteComponentProps<any> & LoggedInUserProps>
-    | React.ComponentType<any & LoggedInUserProps>;
+interface IPublicRouteProps extends RouteProps {
+  component: FC<any>;
 }
 
-const PublicRoute = ({ children, ...rest }: EnhancedRouterProps) => {
-  const { data, error, loading } = useQuery(LOGGED_IN_USER_QUERY);
+const PublicRoute: FC<IPublicRouteProps> = ({
+  component: Component,
+  ...rest
+}) => {
+  const { data, error, loading } = useQuery<LoggedInUserData>(
+    LOGGED_IN_USER_QUERY
+  );
 
-  if (!children) {
-    return <Redirect to="/" />;
-  }
+  return (
+    <Route {...rest}>
+      {(props) => {
+        if (loading) {
+          return <p>Loading...</p>;
+        }
 
-  if (loading) {
-    return <p>Loading</p>;
-  }
+        if (!error && data && data.me) {
+          return <Redirect to="/" />;
+        }
 
-  if (!error && data && data.me) {
-    return <Redirect to="/" />;
-  }
-
-  return <Route {...rest}>{children}</Route>;
+        return <Component {...props} />;
+      }}
+    </Route>
+  );
 };
 
 export default PublicRoute;

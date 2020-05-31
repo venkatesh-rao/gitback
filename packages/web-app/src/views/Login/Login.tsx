@@ -1,15 +1,15 @@
-import React from "react";
-import { Redirect } from "react-router-dom";
 import { useMutation } from "@apollo/client";
+import React, { FC } from "react";
+import { FaGithub } from "react-icons/fa";
+import { Redirect, RouteChildrenProps } from "react-router-dom";
+import DeveloperActivity from "../../assets/img/developer-activity.png";
+import { AUTH_TOKEN } from "../../constants";
+import { useQueryParams } from "../../utils";
 import { GITHUB_USER_AUTHENTICATE_QUERY } from "./query";
 import {
-  GithubUserAuthenticateVars,
   GithubUserAuthenticateData,
+  GithubUserAuthenticateVars,
 } from "./types";
-import { FaGithub } from "react-icons/fa";
-import DeveloperActivity from "../../assets/img/developer-activity.png";
-import { useQueryParams } from "../../utils";
-import { AUTH_TOKEN } from "../../constants";
 
 const {
   REACT_APP_GITHUB_OAUTH_CLIENT_ID,
@@ -37,7 +37,25 @@ const features: IFeature[] = [
   },
 ];
 
-function Login() {
+interface ILoginProps extends RouteChildrenProps {}
+
+const Login: FC<ILoginProps> = (props) => {
+  React.useEffect(() => {
+    const referrer = localStorage.getItem("gitback-login-referrer");
+
+    if (!referrer || referrer === "undefined") {
+      localStorage.setItem(
+        "gitback-login-referrer",
+        JSON.stringify(props.location.state)
+      );
+    }
+
+    return () => {
+      localStorage.removeItem("gitback-login-referrer");
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const queryParams = useQueryParams();
 
   const code = queryParams.get("code");
@@ -80,7 +98,15 @@ function Login() {
   }, [loginAsUser, code]);
 
   if (isSuccess) {
-    return <Redirect to="/" />;
+    let referrer = localStorage.getItem("gitback-login-referrer");
+
+    if (!referrer || referrer === "undefined") {
+      referrer = JSON.stringify({ from: { pathname: "/" } });
+    }
+
+    const { from } = JSON.parse(referrer);
+
+    return <Redirect to={from} />;
   }
 
   if (githubUserAuthenticateLoading) {
@@ -132,6 +158,6 @@ function Login() {
       </div>
     </div>
   );
-}
+};
 
 export default Login;
