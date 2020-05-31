@@ -32,9 +32,9 @@ const Home: React.FC<IHomeProps> = (props) => {
         return (
           <Link
             to={`/${product.url}`}
-            className="border-l-8 border-transparent hover:border-purple-700 bg-white rounded-md shadow-md w-full max-w-xs py-3 px-6 mr-0 mb-6 md:mr-6 md:mb-0"
+            className="bg-white rounded-md shadow-md w-full max-w-xs p-3 mr-0 mb-6 md:mr-6 md:mb-0"
           >
-            <h6 className="text-xl w-full text-purple-500 font-semibold mb-2">
+            <h6 className="text-xl w-full text-purple-500 font-semibold mb-2 text-center">
               {product.name}
             </h6>
             {/* <div className="inline-flex flex-row m-4">
@@ -51,19 +51,13 @@ const Home: React.FC<IHomeProps> = (props) => {
                 );
               })}
             </div> */}
-            <div className="flex flex-row items-center rounded-md text-gray-700">
+            <div className="flex flex-row items-center justify-center rounded-md text-gray-700">
               <GoRepo className="inline-block mr-1" />
               <div>{product.repositoryName}</div>
             </div>
           </Link>
         );
       })}
-      <Link
-        to="/create-product"
-        className="flex flex-col items-center justify-center rounded-md w-full max-w-xs px-2 border-2 border-dashed border-purple-500 mb-6 md:mb-0"
-      >
-        <div className="text-4xl text-purple-500">+</div>
-      </Link>
     </div>
   );
 };
