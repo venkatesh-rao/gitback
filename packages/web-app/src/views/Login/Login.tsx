@@ -1,4 +1,4 @@
-import { useMutation, useLazyQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import React, { FC } from "react";
 import { FaGithub } from "react-icons/fa";
 import { RouteChildrenProps } from "react-router-dom";
@@ -44,8 +44,6 @@ const Login: FC<ILoginProps> = (props) => {
   const queryParams = useQueryParams();
 
   const code = queryParams.get("code");
-
-  const [getLoggedInUser] = useLazyQuery(LOGGED_IN_USER_QUERY);
 
   const [
     githubUserAuthenticate,
