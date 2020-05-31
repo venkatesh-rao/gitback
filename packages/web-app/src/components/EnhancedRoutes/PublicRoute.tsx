@@ -7,14 +7,7 @@ import {
 } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { LOGGED_IN_USER_QUERY } from "./query";
-
-interface IUser {
-  name?: string;
-  username: string;
-  avatarUrl?: string;
-  publicEmail?: string;
-  userType: string;
-}
+import { IUser } from "../EnhancedRoutes/types";
 
 interface LoggedInUserProps {
   loggedInUser?: IUser;
