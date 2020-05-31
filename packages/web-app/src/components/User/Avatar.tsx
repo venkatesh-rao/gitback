@@ -61,7 +61,7 @@ export const Avatar: React.FC<IAvatarProps> = (props: IAvatarProps) => {
     }
 
     onLogout();
-  }, [toggleMenu, history, onLogout]);
+  }, [toggleMenu, history, onLogout, client]);
 
   return (
     <div className="ml-3 relative" ref={wrapperRef}>
