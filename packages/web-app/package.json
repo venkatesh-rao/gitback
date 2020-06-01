@@ -31,6 +31,7 @@
     "react-morphing-modal": "^0.2.2",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.4.1",
+    "react-tooltip": "^4.2.6",
     "react-use": "^15.1.1",
     "typescript": "^3.7.5",
     "yup": "^0.28.5"
