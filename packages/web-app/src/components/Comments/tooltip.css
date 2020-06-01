@@ -1,0 +1,8 @@
+.hover-remain-tooltip {
+  pointer-events: auto !important;
+}
+
+.hover-remain-tooltip:hover {
+  visibility: visible !important;
+  opacity: 1 !important;
+}

@@ -32,7 +32,7 @@ const AdminLayout: React.FC<IAdminLayoutProps> = (props) => {
   return (
     <MenuContext.Provider value={{ isMenuOpen, toggleMenu }}>
       <div className="overflow-x-hidden">
-        <nav className="sticky top-0 w-screen px-4 h-12 z-20 flex flex-row items-center bg-purple-800 shadow">
+        <nav className="fixed top-0 w-screen px-4 h-12 z-20 flex flex-row items-center bg-purple-800 shadow">
           <div className="flex-1 flex items-center">
             <Link
               to="/"
@@ -63,7 +63,7 @@ const AdminLayout: React.FC<IAdminLayoutProps> = (props) => {
         <main
           className={`main-container ${
             !isMenuOpen && "menu-close"
-          } transition-all ease duration-300 ml-auto p-4 bg-gray-100`}
+          } transition-all ease duration-300 ml-auto p-4 bg-gray-100 mt-12`}
         >
           {props.children}
         </main>

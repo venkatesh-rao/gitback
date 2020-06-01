@@ -1,10 +1,11 @@
 import React from "react";
 import { IoIosAdd } from "react-icons/io";
 import "react-morphing-modal/dist/ReactMorphingModal.css";
-import { Link, useLocation, useHistory } from "react-router-dom";
-import "./menu.css";
+import { Link, useHistory, useLocation } from "react-router-dom";
+import ReactTooltip from "react-tooltip";
 import { IUser } from "../components/EnhancedRoutes/types";
 import { Avatar } from "../components/User/Avatar";
+import "./menu.css";
 
 export const MenuContext = React.createContext({
   isMenuOpen: false,
@@ -39,7 +40,7 @@ const PublicLayout: React.FC<IPublicLayoutProps> = ({
   return (
     <MenuContext.Provider value={{ isMenuOpen, toggleMenu }}>
       <div className="overflow-x-hidden">
-        <nav className="sticky top-0 w-screen px-4 h-12 z-20 flex flex-row items-center bg-purple-800 shadow">
+        <nav className="fixed top-0 w-screen px-4 h-12 z-20 flex flex-row items-center bg-purple-800 shadow">
           <div className="flex-1 flex items-center">
             {/* <div
               className="p-1 mr-4 rounded-sm hover:bg-white hover:bg-opacity-25 cursor-pointer"
@@ -62,25 +63,37 @@ const PublicLayout: React.FC<IPublicLayoutProps> = ({
               <IoIosAdd className="text-white text-3xl" />
             </Link>
           ) : null}
-          {user ? (
-            <Avatar
-              avatarUrl={user.avatarUrl!}
-              history={history}
-              onLogout={() => {
-                return;
-              }}
-            />
-          ) : (
-            <Link
-              to={{
-                pathname: "/login",
-                state: { from: location },
-              }}
-              className="ml-3 block w-6 h-6 shadow-xs rounded-full leading-6 text-center bg-white text-purple-800"
-            >
-              A
-            </Link>
-          )}
+          <ReactTooltip id="avatar" type="dark" effect="solid">
+            {user ? (
+              <span>
+                <span className="italic">{`Logged in as `}</span>
+                <span className="font-bold">{user.username}</span>
+              </span>
+            ) : (
+              <span>Anonymous user</span>
+            )}
+          </ReactTooltip>
+          <i data-tip data-for="avatar">
+            {user ? (
+              <Avatar
+                avatarUrl={user.avatarUrl!}
+                history={history}
+                onLogout={() => {
+                  return;
+                }}
+              />
+            ) : (
+              <Link
+                to={{
+                  pathname: "/login",
+                  state: { from: location },
+                }}
+                className="ml-3 block w-6 h-6 shadow-xs rounded-full leading-6 text-center bg-white text-purple-800"
+              >
+                A
+              </Link>
+            )}
+          </i>
         </nav>
         <aside
           className={`fixed top-0 left-0 bottom-0 pt-4 bg-white transition-all ease duration-300 menubar ${
@@ -90,7 +103,7 @@ const PublicLayout: React.FC<IPublicLayoutProps> = ({
         <main
           className={`main-container ${
             !isMenuOpen && "menu-close"
-          } transition-all ease duration-300 ml-auto p-4 bg-gray-100`}
+          } transition-all ease duration-300 ml-auto p-4 bg-gray-100 mt-12`}
         >
           {children}
         </main>
