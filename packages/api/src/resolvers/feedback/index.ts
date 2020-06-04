@@ -12,13 +12,13 @@ export async function addNewFeedback(
   context: ContextWithDBModel
 ) {
   const {
-    productId,
+    productUrl,
     feedback: { title, description },
   } = args;
 
   const { githubUserAccessToken } = context.req;
 
-  const product = await context.db.Product.findById(productId)
+  const product = await context.db.Product.findOne({ url: productUrl })
     .populate("owner")
     .lean();
 
@@ -26,7 +26,7 @@ export async function addNewFeedback(
     throw new Error("invalid product");
   }
 
-  const { _id, owner, repositoryName, ...restProductData } = product;
+  const { _id: productId, owner, repositoryName, ...restProductData } = product;
 
   let accessToken = githubUserAccessToken;
 

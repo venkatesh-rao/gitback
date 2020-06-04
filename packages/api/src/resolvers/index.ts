@@ -10,6 +10,7 @@ import {
   QueryProductArgs,
   QueryResolvers,
   Resolvers,
+  MutationCreateCommentArgs,
 } from "../generated/graphql";
 import { ContextWithDBModel } from "../types";
 import createToken from "../utils/create-token";
@@ -22,7 +23,7 @@ import {
 } from "./product";
 import { getAppRepositories } from "./repositories";
 import { getLoggedInUser, getLoggedInUserFromGithub } from "./user";
-import { getComments } from "./comments";
+import { getComments, addNewComment } from "./comments";
 
 const Query: QueryResolvers = {
   me: (_parent, _args, context: ContextWithDBModel) => {
@@ -182,6 +183,16 @@ const Mutation: MutationResolvers = {
     const createdFeedback = await addNewFeedback(args, context);
 
     return createdFeedback;
+  },
+
+  createComment: async (
+    _parent,
+    args: MutationCreateCommentArgs,
+    context: ContextWithDBModel
+  ) => {
+    const createComment = await addNewComment(args, context);
+
+    return createComment;
   },
 };
 

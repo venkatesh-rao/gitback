@@ -45,7 +45,7 @@ const typeDefs: DocumentNode = gql`
   }
 
   type Comment {
-    id: Int!
+    id: Float!
     body: String!
     user: GihubUser!
     createdAt: Float!
@@ -95,7 +95,13 @@ const typeDefs: DocumentNode = gql`
       repositoryName: String!
     ): Product!
 
-    createFeedback(productId: ID!, feedback: FeedbackInput!): Feedback!
+    createFeedback(productUrl: String!, feedback: FeedbackInput!): Feedback!
+
+    createComment(
+      productUrl: String!
+      issueNumber: Float!
+      commentBody: String!
+    ): Comment!
   }
 `;
 

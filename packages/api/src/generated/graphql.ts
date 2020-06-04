@@ -55,7 +55,7 @@ export type Feedback = {
 
 export type Comment = {
    __typename?: 'Comment';
-  id: Scalars['Int'];
+  id: Scalars['Float'];
   body: Scalars['String'];
   user: GihubUser;
   createdAt: Scalars['Float'];
@@ -117,6 +117,7 @@ export type Mutation = {
   logout: Scalars['Boolean'];
   createProduct: Product;
   createFeedback: Feedback;
+  createComment: Comment;
 };
 
 
@@ -138,8 +139,15 @@ export type MutationCreateProductArgs = {
 
 
 export type MutationCreateFeedbackArgs = {
-  productId: Scalars['ID'];
+  productUrl: Scalars['String'];
   feedback: FeedbackInput;
+};
+
+
+export type MutationCreateCommentArgs = {
+  productUrl: Scalars['String'];
+  issueNumber: Scalars['Float'];
+  commentBody: Scalars['String'];
 };
 
 export enum CacheControlScope {
@@ -231,7 +239,6 @@ export type ResolversTypes = ResolversObject<{
   ID: ResolverTypeWrapper<Scalars['ID']>,
   Feedback: ResolverTypeWrapper<Feedback>,
   Comment: ResolverTypeWrapper<Comment>,
-  Int: ResolverTypeWrapper<Scalars['Int']>,
   GihubUser: ResolverTypeWrapper<GihubUser>,
   FeedbackInput: FeedbackInput,
   Query: ResolverTypeWrapper<{}>,
@@ -251,7 +258,6 @@ export type ResolversParentTypes = ResolversObject<{
   ID: Scalars['ID'],
   Feedback: Feedback,
   Comment: Comment,
-  Int: Scalars['Int'],
   GihubUser: GihubUser,
   FeedbackInput: FeedbackInput,
   Query: {},
@@ -302,7 +308,7 @@ export type FeedbackResolvers<ContextType = any, ParentType extends ResolversPar
 }>;
 
 export type CommentResolvers<ContextType = any, ParentType extends ResolversParentTypes['Comment'] = ResolversParentTypes['Comment']> = ResolversObject<{
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>,
+  id?: Resolver<ResolversTypes['Float'], ParentType, ContextType>,
   body?: Resolver<ResolversTypes['String'], ParentType, ContextType>,
   user?: Resolver<ResolversTypes['GihubUser'], ParentType, ContextType>,
   createdAt?: Resolver<ResolversTypes['Float'], ParentType, ContextType>,
@@ -331,7 +337,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   githubAppAuthenticate?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType, RequireFields<MutationGithubAppAuthenticateArgs, 'installationId'>>,
   logout?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>,
   createProduct?: Resolver<ResolversTypes['Product'], ParentType, ContextType, RequireFields<MutationCreateProductArgs, 'productName' | 'productUrl' | 'repositoryName'>>,
-  createFeedback?: Resolver<ResolversTypes['Feedback'], ParentType, ContextType, RequireFields<MutationCreateFeedbackArgs, 'productId' | 'feedback'>>,
+  createFeedback?: Resolver<ResolversTypes['Feedback'], ParentType, ContextType, RequireFields<MutationCreateFeedbackArgs, 'productUrl' | 'feedback'>>,
+  createComment?: Resolver<ResolversTypes['Comment'], ParentType, ContextType, RequireFields<MutationCreateCommentArgs, 'productUrl' | 'issueNumber' | 'commentBody'>>,
 }>;
 
 export interface UploadScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Upload'], any> {
