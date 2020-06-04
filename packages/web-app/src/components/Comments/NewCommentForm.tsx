@@ -96,6 +96,7 @@ const NewCommentForm: FC<INewCommentFormProps> = memo(
           variables: values,
         });
         actions.setSubmitting(false);
+        actions.resetForm();
         return;
       },
       []
