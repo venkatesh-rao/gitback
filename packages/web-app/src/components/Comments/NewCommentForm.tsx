@@ -120,7 +120,7 @@ const NewCommentForm: FC<INewCommentFormProps> = memo(
                 ) : (
                   <>
                     <ReactTooltip
-                      id="avatar"
+                      id="comment-avatar"
                       type="dark"
                       effect="solid"
                       className="hover-remain-tooltip"
@@ -136,7 +136,7 @@ const NewCommentForm: FC<INewCommentFormProps> = memo(
                     </ReactTooltip>
                     <div
                       data-tip
-                      data-for="avatar"
+                      data-for="comment-avatar"
                       className="h-10 w-10 shadow-xs rounded leading-10 text-center bg-gray-200 text-gray-800"
                     >
                       A
