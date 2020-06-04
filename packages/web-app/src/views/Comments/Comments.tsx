@@ -15,7 +15,7 @@ import NewCommentForm from "../../components/Comments/NewCommentForm";
 import { IUser } from "../../components/EnhancedRoutes/types";
 import Layout from "../../layout";
 
-const COMMENTS_LIMIT = 10;
+export const COMMENTS_LIMIT = 10;
 
 interface ICommentsProps {
   user?: IUser;
@@ -119,7 +119,11 @@ const Comments: React.FC<ICommentsProps> = (props) => {
     >
       <div className="w-full max-w-3xl mx-auto">
         <FeedbackHeader {...feedbackData.feedback} />
-        <NewCommentForm loggedInUser={user} feedback={feedbackData.feedback} />
+        <NewCommentForm
+          loggedInUser={user}
+          feedback={feedbackData.feedback}
+          issueNumber={Number(params.issueNumber!)}
+        />
         <h6 className="text-gray-700 font-semibold mt-8 mb-6 block">
           Comments
         </h6>

@@ -26,3 +26,13 @@ export interface FeedbackVars {
   productUrl: string;
   issueNumber: number;
 }
+
+export interface CreateCommentVars {
+  productUrl: string;
+  issueNumber: number;
+  commentBody: string;
+}
+
+export interface CreateCommentData {
+  createComment: IComment;
+}
