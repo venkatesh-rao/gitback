@@ -63,7 +63,7 @@ const PublicLayout: React.FC<IPublicLayoutProps> = ({
               <IoIosAdd className="text-white text-3xl" />
             </Link>
           ) : null}
-          <ReactTooltip id="avatar" type="dark" effect="solid">
+          <ReactTooltip id="layout-avatar" type="dark" effect="solid">
             {user ? (
               <span>
                 <span className="italic">{`Logged in as `}</span>
@@ -73,7 +73,7 @@ const PublicLayout: React.FC<IPublicLayoutProps> = ({
               <span>Anonymous user</span>
             )}
           </ReactTooltip>
-          <i data-tip data-for="avatar">
+          <i data-tip data-for="layout-avatar">
             {user ? (
               <Avatar
                 avatarUrl={user.avatarUrl!}
