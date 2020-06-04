@@ -25,6 +25,29 @@ export const COMMENTS_QUERY = gql`
   }
 `;
 
+export const CREATE_COMMENT_MUTATION = gql`
+  mutation CreateComment(
+    $productUrl: String!
+    $issueNumber: Float!
+    $commentBody: String!
+  ) {
+    createComment(
+      productUrl: $productUrl
+      issueNumber: $issueNumber
+      commentBody: $commentBody
+    ) {
+      id
+      body
+      user {
+        username
+        avatarUrl
+      }
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
 export const FEEDBACK_QUERY = gql`
   query Feedback($productUrl: String!, $issueNumber: Float!) {
     feedback(productUrl: $productUrl, issueNumber: $issueNumber) {
