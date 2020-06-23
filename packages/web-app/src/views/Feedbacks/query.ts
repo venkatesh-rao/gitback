@@ -18,8 +18,8 @@ export const FEEDBACKS_QUERY = gql`
 `;
 
 export const CREATE_FEEDBACK_MUTATION = gql`
-  mutation CreateFeedback($productId: ID!, $feedback: FeedbackInput!) {
-    createFeedback(productId: $productId, feedback: $feedback) {
+  mutation CreateFeedback($productUrl: String!, $feedback: FeedbackInput!) {
+    createFeedback(productUrl: $productUrl, feedback: $feedback) {
       id
       title
       description

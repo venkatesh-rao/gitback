@@ -78,7 +78,7 @@ const Feedbacks: React.FC<IFeedbacksProps> = ({ product }) => {
       try {
         const response = await createFeedback({
           variables: {
-            productId: product.id,
+            productUrl: product.url,
             feedback: values,
           },
         });
@@ -96,7 +96,7 @@ const Feedbacks: React.FC<IFeedbacksProps> = ({ product }) => {
         actions.setSubmitting(false);
       }
     },
-    [product.id, createFeedback, createFeedbackLoading]
+    [product.url, createFeedback, createFeedbackLoading]
   );
 
   if (loading) {
