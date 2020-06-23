@@ -99,7 +99,7 @@ const NewCommentForm: FC<INewCommentFormProps> = memo(
         actions.resetForm();
         return;
       },
-      []
+      [createComment]
     );
 
     return (
