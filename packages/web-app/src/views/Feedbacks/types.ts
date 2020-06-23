@@ -32,7 +32,7 @@ interface FeedbackInput {
 }
 
 export interface CreateFeedbackVars {
-  productId: string;
+  productUrl: string;
   feedback: FeedbackInput;
 }
 
