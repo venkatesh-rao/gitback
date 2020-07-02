@@ -1,0 +1,113 @@
+.react-mde {
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  position: relative;
+  color: #24292e;
+  background-color: #fff;
+  margin-left: 16px;
+  max-width: 38.5rem;
+  width: 100%;
+}
+
+.react-mde:before {
+  border-width: 8px;
+  border-right-color: #d1d5da !important;
+}
+
+.react-mde:after,
+.react-mde:before {
+  position: absolute;
+  top: 11px;
+  right: 100%;
+  left: -16px;
+  display: block;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  content: " ";
+  border-color: #0000;
+  border-style: solid solid outset;
+}
+
+.mde-header {
+  background: #f6f8fa;
+  border-radius: 6px 6px 0 0;
+  border: 1px solid #e1e4e8;
+  display: flex;
+  align-items: center;
+}
+
+.mde-header-group {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  height: fit-content;
+  margin: 0 !important;
+}
+
+.mde-header-group:first-of-type {
+  padding-left: 5px !important;
+}
+
+.mde-header-group:last-of-type {
+  padding-right: 5px !important;
+}
+
+.mde-header-item > button {
+  height: fit-content !important;
+  padding: 0 4px !important;
+  color: #586069 !important;
+  font-size: small !important;
+}
+
+.mde-tabs {
+  flex: 1;
+}
+
+.mde-tabs > button {
+  background-color: transparent;
+  font-size: 14px;
+  color: #24292e;
+  padding: 8px 16px;
+  outline: none;
+  margin: 6px 0 -1px 10px !important;
+}
+
+.mde-tabs > button.selected {
+  background-color: #fff;
+  border-color: #e1e4e8;
+  border-radius: 6px 6px 0 0;
+  border-bottom-width: 0 !important;
+}
+
+.mde-textarea-wrapper {
+  border: none;
+  margin: 0.5rem;
+}
+
+.mde-textarea-wrapper > textarea {
+  background-color: #fafbfc;
+  padding: 5px 12px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #24292e;
+  border: 1px solid #e1e4e8 !important;
+  border-radius: 6px;
+  outline: none;
+}
+
+.mde-textarea-wrapper > textarea:focus {
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+  background-color: #fff;
+}
+
+.mde-preview {
+  min-height: 220px !important;
+}
+
+.react-mde .grip {
+  border-top: 1px solid #e1e4e8 !important;
+}
+
+.react-mde .grip .icon {
+  margin: auto;
+}

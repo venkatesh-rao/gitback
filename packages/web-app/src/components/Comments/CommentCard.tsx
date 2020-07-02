@@ -1,5 +1,6 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
+import "github-markdown-css";
 import { IComment } from "../../views/Comments/types";
 
 interface ICommentCardProps {
@@ -34,7 +35,7 @@ const CommentCard: React.FC<ICommentCardProps & IComment> = ({
           {user.username}
         </a>
       </div>
-      <div className="ml-4 pl-5 pt-4 pb-5 border-l">
+      <div className="ml-4 pl-5 pt-4 pb-5 border-l markdown">
         <ReactMarkdown className="text-gray-800 text-lg" source={body} />
       </div>
     </div>
