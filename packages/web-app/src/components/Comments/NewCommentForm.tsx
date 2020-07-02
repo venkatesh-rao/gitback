@@ -22,7 +22,11 @@ import {
   FieldProps,
   FormikHelpers,
 } from "formik";
+import ReactMde from "react-mde";
 import * as Yup from "yup";
+import * as Showdown from "showdown";
+import "react-mde/lib/styles/css/react-mde-all.css";
+import "./comment-markdown.css";
 
 interface INewCommentFormProps {
   loggedInUser?: IUser;
@@ -36,8 +40,19 @@ const CreateCommentSchema = Yup.object().shape({
   commentBody: Yup.string().required("Required"),
 });
 
+const converter = new Showdown.Converter({
+  tables: true,
+  simplifiedAutoLink: true,
+  strikethrough: true,
+  tasklists: true,
+});
+
 const NewCommentForm: FC<INewCommentFormProps> = memo(
   ({ loggedInUser, feedback, issueNumber }) => {
+    const [selectedTab, setSelectedTab] = React.useState<"write" | "preview">(
+      "write"
+    );
+
     const { product } = feedback;
 
     const { url: productUrl } = product;
@@ -110,7 +125,7 @@ const NewCommentForm: FC<INewCommentFormProps> = memo(
           onSubmit={handleSubmit}
         >
           {({ dirty, isValid }: FormikProps<CreateCommentVars>) => (
-            <Form>
+            <Form className="new-comment-form">
               <div className="flex flex-row">
                 {loggedInUser ? (
                   <img
@@ -145,15 +160,33 @@ const NewCommentForm: FC<INewCommentFormProps> = memo(
                   </>
                 )}
                 <Field name="commentBody">
-                  {({ field }: FieldProps) => (
-                    <textarea
-                      className="flex-1 md:flex-auto md:max-w-md w-full rounded ml-6 px-2 py-3 resize-none bg-white border border-gray-300 hover:shadow-md outline-none focus:shadow-outline overflow-y-auto overflow-x-hidden whitespace-pre-wrap"
-                      style={{
-                        minHeight: "5rem",
-                        maxHeight: "12rem",
+                  {({
+                    field: { name, value },
+                    form: { setFieldValue },
+                  }: FieldProps) => (
+                    // <textarea
+                    //   className="flex-1 md:flex-auto md:max-w-md w-full rounded ml-6 px-2 py-3 resize-none bg-white border border-gray-300 hover:shadow-md outline-none focus:shadow-outline overflow-y-auto overflow-x-hidden whitespace-pre-wrap"
+                    //   style={{
+                    //     minHeight: "5rem",
+                    //     maxHeight: "12rem",
+                    //   }}
+                    //   placeholder="Type here to comment..."
+                    //   {...field}
+                    // />
+                    <ReactMde
+                      onChange={(value) => setFieldValue(name, value)}
+                      value={value}
+                      selectedTab={selectedTab}
+                      onTabChange={setSelectedTab}
+                      generateMarkdownPreview={(markdown) =>
+                        Promise.resolve(converter.makeHtml(markdown))
+                      }
+                      childProps={{
+                        writeButton: {
+                          tabIndex: -1,
+                        },
+                        textArea: { placeholder: "Type here to comment..." },
                       }}
-                      placeholder="Type here to comment..."
-                      {...field}
                     />
                   )}
                 </Field>
