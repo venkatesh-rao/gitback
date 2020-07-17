@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "start:dev": "lerna run start:dev",
-    "build": "lerna run build",
+    "build": "lerna run --scope api build",
+    "build-all": "lerna run build",
     "start": "lerna run start",
     "bootstrap": "lerna bootstrap",
     "postinstall": "npm run bootstrap && npm run build",
