@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import { AccessToken } from "../types";
 import { verify } from "jsonwebtoken";
+import createToken from "./create-token";
 
 export async function authMiddleware(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  const Authorization = req.headers["authorization"];
+  const Authorization = req.cookies["gitback-at"];
 
   // if not access token present, skip this step
   if (!Authorization) {
@@ -28,6 +29,15 @@ export async function authMiddleware(
     (req as any).githubUserAccessToken = data.githubUserAccessToken;
     (req as any).userId = data.userId;
     (req as any).username = data.username;
+
+    const token = createToken(data);
+
+    let cookieAttributes = {};
+
+    res.cookie("gitback-at", token, {
+      ...cookieAttributes,
+      maxAge: 3456000000,
+    });
   } catch (err) {
     return next();
   }
