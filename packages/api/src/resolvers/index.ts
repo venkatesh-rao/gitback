@@ -126,6 +126,15 @@ const Mutation: MutationResolvers = {
       githubUserAccessToken,
     });
 
+    /* Store the tokens in cookies  */
+    let cookieAttributes = {};
+
+    context.res.cookie("gitback-at", token, {
+      ...cookieAttributes,
+      // expires in 40 days
+      maxAge: 3456000000,
+    });
+
     return token;
   },
   githubAppAuthenticate: async (

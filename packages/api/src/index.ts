@@ -56,7 +56,7 @@ const corsOptions: CorsOptions = {
       // callback(new Error("Not allowed by CORS"));
     }
   },
-  // credentials: true, // <- enable CORS response for requests with credentials (cookies, http authentication)
+  credentials: true, // <- enable CORS response for requests with credentials (cookies, http authentication)
 };
 
 // allow requests from only specified origins
